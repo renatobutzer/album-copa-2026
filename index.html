@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+  <meta name="theme-color" content="#1d4ed8" />
+  <meta name="description" content="Controle do álbum Panini Copa do Mundo 2026: marque o que tem, repetidas e o que falta." />
+  <title>Álbum Copa 2026</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===================== CABEÇALHO ===================== -->
+  <header>
+    <div class="head-row">
+      <div class="head-title">⚽ Álbum Copa 2026
+        <small id="headSub">Panini · 992 figurinhas</small>
+      </div>
+      <button class="icon-btn" id="btnConfig" title="Ajustes" aria-label="Ajustes">⚙️</button>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+      <div class="progress-label">
+        <span id="progText">0 / 992</span>
+        <span id="progPct">0%</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== ÁLBUM ===================== -->
+  <div class="view active" id="view-album">
+    <div class="controls">
+      <input class="search" id="search" type="search" inputmode="search"
+             placeholder="🔎 Buscar nº (ex.: BRA7) ou nome do jogador…" autocomplete="off" />
+      <div class="filters" id="filters">
+        <button class="chip active" data-f="all">Tudo</button>
+        <button class="chip" data-f="falta">❌ Faltam</button>
+        <button class="chip" data-f="have">✅ Tenho</button>
+        <button class="chip" data-f="dup">🔄 Repetidas</button>
+        <button class="chip" data-f="foil">✨ Foil</button>
+      </div>
+      <div class="markmode" id="markmode">
+        <span class="mm-label">O toque marca:</span>
+        <div class="mm-seg">
+          <button class="mm-opt active" data-mode="have">✅ Tenho</button>
+          <button class="mm-opt" data-mode="dup">🔄 Repetida</button>
+        </div>
+      </div>
+    </div>
+    <p class="hint" id="hint">Toque para marcar que tem · toque no <b>+</b> para repetida · segure para editar nome</p>
+    <main id="album"></main>
+  </div>
+
+  <!-- ===================== FALTAM ===================== -->
+  <div class="view" id="view-faltam">
+    <main>
+      <p class="list-head" id="faltamHead"></p>
+      <div id="faltamList"></div>
+    </main>
+  </div>
+
+  <!-- ===================== REPETIDAS ===================== -->
+  <div class="view" id="view-rep">
+    <main>
+      <p class="list-head" id="repHead"></p>
+      <div id="repList"></div>
+    </main>
+  </div>
+
+  <!-- ===================== TROCAR / COMPARTILHAR ===================== -->
+  <div class="view" id="view-share">
+    <main>
+      <div class="stat-row">
+        <div class="stat g"><div class="v" id="stHave">0</div><div class="l">Tenho</div></div>
+        <div class="stat r"><div class="v" id="stRep">0</div><div class="l">Repetidas</div></div>
+        <div class="stat"><div class="v" id="stMiss">0</div><div class="l">Faltam</div></div>
+      </div>
+
+      <div class="card">
+        <h2>🔄 Lista para troca</h2>
+        <p>Gera um texto pronto para colar no grupo do WhatsApp com suas repetidas e o que falta.</p>
+        <button class="action-btn" id="btnWhats">📲 Copiar p/ WhatsApp</button>
+        <button class="action-btn sec" id="btnShareApi" style="display:none">📤 Compartilhar…</button>
+        <textarea class="preview" id="sharePreview" readonly></textarea>
+        <button class="action-btn sec" id="btnCopyRep">Copiar só repetidas</button>
+        <button class="action-btn sec" id="btnCopyMiss">Copiar só faltantes</button>
+      </div>
+
+      <div class="card">
+        <h2>🔗 Link da minha coleção</h2>
+        <p>Manda pro amigo. Ao abrir, ele vê suas repetidas e faltantes — e o app dele já mostra o que combina pra trocar.</p>
+        <input type="text" id="shareName" class="search" placeholder="Seu nome (opcional)" style="margin-bottom:10px" autocomplete="off" />
+        <button class="action-btn" id="btnGenLink">🔗 Gerar link de troca</button>
+        <div id="shareLinkBox" style="display:none">
+          <textarea class="preview" id="shareLinkOut" readonly></textarea>
+          <button class="action-btn" id="btnCopyLink">📋 Copiar link</button>
+          <button class="action-btn sec" id="btnWhatsLink">📲 Mandar no WhatsApp</button>
+          <button class="action-btn sec" id="btnQR">🔳 Mostrar / ocultar QR</button>
+          <div id="qrBox" class="qrbox" style="display:none"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===================== AJUSTES / BACKUP ===================== -->
+  <div class="view" id="view-config">
+    <main>
+      <div class="card">
+        <h2>💾 Backup (salvar / restaurar)</h2>
+        <p>Tudo fica salvo neste aparelho. Exporte um arquivo para guardar ou levar para outro celular/PC.</p>
+        <button class="action-btn" id="btnExport">⬇️ Exportar meu progresso</button>
+        <button class="action-btn sec" id="btnImport">⬆️ Importar de um arquivo</button>
+        <input type="file" id="fileImport" accept="application/json,.json" style="display:none" />
+        <div class="note">📱 <b>No iPhone:</b> abra o app pelo atalho na <b>Tela de Início</b> (no Safari: <b>Compartilhar → Adicionar à Tela de Início</b>). Sem isso, o Safari pode apagar seu progresso após ~7 dias sem uso. Vale também <b>exportar um backup</b> de vez em quando.</div>
+      </div>
+      <div class="card">
+        <h2>🎨 Aparência</h2>
+        <label for="themeSelect" style="display:block;font-size:.85rem;color:var(--text-dim);margin-bottom:8px">Tema do app (muda na hora):</label>
+        <div class="select-wrap">
+          <select id="themeSelect" class="theme-select" aria-label="Escolher tema" autocomplete="off">
+            <option value="auto">🌗 Automático (segue o sistema)</option>
+            <option value="light">☀️ Claro</option>
+            <option value="dark">🌙 Escuro</option>
+            <option value="oled">⬛ Preto total (OLED)</option>
+            <option value="expressive">🟢 Material Expressive (claro)</option>
+            <option value="expressive-dark">🌲 Material Expressive (escuro)</option>
+          </select>
+        </div>
+      </div>
+      <div class="card">
+        <h2>♻️ Recomeçar</h2>
+        <p>Apaga TODAS as marcações deste álbum (não dá para desfazer).</p>
+        <button class="action-btn danger" id="btnReset">Zerar tudo</button>
+      </div>
+      <div class="card">
+        <h2>ℹ️ Sobre</h2>
+        <p style="margin:0">Álbum FIFA World Cup 2026 (Panini): 980 figurinhas + 12 do insert Coca-Cola = 992.
+        Checklist coletada em 31/05/2026 — os nomes dos jogadores podem mudar nas convocações finais; segure uma figurinha para corrigir.</p>
+      </div>
+      <p class="foot-note">Feito para uso pessoal · imagens/nomes pertencem aos seus detentores.</p>
+    </main>
+  </div>
+
+  <!-- ===================== LISTA DE AMIGO (link compartilhado) ===================== -->
+  <div class="view" id="view-friend">
+    <main>
+      <div class="friend-hero">
+        <div class="friend-title" id="friendTitle">📋 Lista de troca</div>
+        <div class="friend-sub" id="friendSub"></div>
+      </div>
+      <div id="friendBody"></div>
+      <button class="action-btn" id="btnExitFriend">📖 Ver / usar o meu álbum</button>
+      <p class="foot-note">Você está vendo a lista de outra pessoa — sua coleção não foi alterada.</p>
+    </main>
+  </div>
+
+  <!-- ===================== SHEET (detalhe) ===================== -->
+  <div class="backdrop" id="backdrop">
+    <div class="sheet" id="sheet">
+      <div class="grab"></div>
+      <div class="s-code" id="shCode"></div>
+      <div class="s-sub" id="shSub"></div>
+      <div class="s-foil" id="shFoil" style="display:none">✨ Figurinha foil (brilhante) — mais rara</div>
+
+      <label for="shName">Nome / descrição</label>
+      <input type="text" id="shName" placeholder="Ex.: nome do jogador" />
+
+      <div class="toggle-row">
+        <button class="big-btn" id="shHave">Marcar que tenho</button>
+      </div>
+
+      <div class="stepper">
+        <span class="lab">🔄 Repetidas</span>
+        <div class="ctrls">
+          <button class="step-btn" id="shMinus">−</button>
+          <span class="step-val" id="shDup">0</span>
+          <button class="step-btn" id="shPlus">+</button>
+        </div>
+      </div>
+
+      <button class="action-btn" id="shClose" style="margin-top:18px">Fechar</button>
+    </div>
+  </div>
+
+  <!-- ===================== ABAS ===================== -->
+  <nav class="tabbar" id="tabbar">
+    <button class="tab active" data-v="album"><span class="ic">📖</span>Álbum</button>
+    <button class="tab" data-v="faltam"><span class="ic">❌</span>Faltam</button>
+    <button class="tab" data-v="rep"><span class="ic">🔄</span>Repetidas</button>
+    <button class="tab" data-v="share"><span class="ic">📲</span>Trocar</button>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="vendor/lz-string.min.js"></script>
+  <script src="vendor/qrcode.min.js"></script>
+  <script src="data/album.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

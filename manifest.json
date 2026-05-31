@@ -1,0 +1,19 @@
+{
+  "name": "Álbum Copa 2026 — Figurinhas",
+  "short_name": "Copa 2026",
+  "description": "Controle das figurinhas do álbum Panini da Copa do Mundo 2026: marque o que tem, as repetidas e veja o que falta.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b1020",
+  "theme_color": "#1d4ed8",
+  "lang": "pt-BR",
+  "categories": ["sports", "utilities"],
+  "icons": [
+    { "src": "icons/icon.svg", "type": "image/svg+xml", "sizes": "any", "purpose": "any" },
+    { "src": "icons/icon-192.png", "type": "image/png", "sizes": "192x192", "purpose": "any" },
+    { "src": "icons/icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" }
+  ]
+}
