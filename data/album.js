@@ -125,23 +125,28 @@ window.ALBUM = (function () {
   };
 
   /* -------------------------------------------------------------------------
-     4) INSERT COCA-COLA (12 figurinhas)
-        Nomes confirmados; numeração 1-12 NÃO é oficial (fontes divergem).
-        Acabamento foil não confirmado -> tratado como normal.
+     4) INSERT COCA-COLA — edição BRASIL/LATAM: 14 figurinhas (CC1–CC14)
+        (EUA/Canadá = 12; Brasil = 14 — confirmado pela Coca-Cola Brasil em
+        coca-cola.com/br + imprensa BR + lote físico "CC1 a CC14".)
+        Os 14 jogadores estão confirmados; a ORDEM número↔jogador NÃO é oficial
+        (montada em ordem alfabética do site da Coca-Cola Brasil) — confira no
+        seu álbum e ajuste segurando a figurinha. Foil não confirmado.
      ------------------------------------------------------------------------- */
   const COCACOLA = [
-    { code: "CC1",  pos: "CC1",  name: "Lamine Yamal — Espanha",        foil: false },
-    { code: "CC2",  pos: "CC2",  name: "Joshua Kimmich — Alemanha",     foil: false },
-    { code: "CC3",  pos: "CC3",  name: "Harry Kane — Inglaterra",       foil: false },
-    { code: "CC4",  pos: "CC4",  name: "Santiago Giménez — México",     foil: false },
-    { code: "CC5",  pos: "CC5",  name: "Antonee Robinson — EUA",        foil: false },
-    { code: "CC6",  pos: "CC6",  name: "Jefferson Lerma — Colômbia",    foil: false },
-    { code: "CC7",  pos: "CC7",  name: "Edson Álvarez — México",        foil: false },
-    { code: "CC8",  pos: "CC8",  name: "Virgil van Dijk — Holanda",     foil: false },
-    { code: "CC9",  pos: "CC9",  name: "Alphonso Davies — Canadá",      foil: false },
-    { code: "CC10", pos: "CC10", name: "Weston McKennie — EUA",         foil: false },
+    { code: "CC1",  pos: "CC1",  name: "Alphonso Davies — Canadá",      foil: false },
+    { code: "CC2",  pos: "CC2",  name: "Emiliano Martínez — Argentina", foil: false },
+    { code: "CC3",  pos: "CC3",  name: "Enner Valencia — Equador",      foil: false },
+    { code: "CC4",  pos: "CC4",  name: "Federico Valverde — Uruguai",   foil: false },
+    { code: "CC5",  pos: "CC5",  name: "Gabriel Magalhães — Brasil",    foil: false },
+    { code: "CC6",  pos: "CC6",  name: "Harry Kane — Inglaterra",       foil: false },
+    { code: "CC7",  pos: "CC7",  name: "Jefferson Lerma — Colômbia",    foil: false },
+    { code: "CC8",  pos: "CC8",  name: "Joshua Kimmich — Alemanha",     foil: false },
+    { code: "CC9",  pos: "CC9",  name: "Joško Gvardiol — Croácia",      foil: false },
+    { code: "CC10", pos: "CC10", name: "Lamine Yamal — Espanha",        foil: false },
     { code: "CC11", pos: "CC11", name: "Lautaro Martínez — Argentina",  foil: false },
-    { code: "CC12", pos: "CC12", name: "Gabriel Magalhães — Brasil",    foil: false },
+    { code: "CC12", pos: "CC12", name: "Raúl Jiménez — México",         foil: false },
+    { code: "CC13", pos: "CC13", name: "Santiago Giménez — México",     foil: false },
+    { code: "CC14", pos: "CC14", name: "Virgil van Dijk — Holanda",     foil: false },
   ];
 
   /* =========================================================================
@@ -228,7 +233,7 @@ window.ALBUM = (function () {
     meta: {
       nome: "Copa do Mundo FIFA 2026 — Panini",
       totalBase: totalBase,                                   // 980
-      totalComInserts: totalBase + secaoCoke.stickers.length, // 992
+      totalComInserts: totalBase + secaoCoke.stickers.length, // 994 (980 + 14 Coca-Cola)
       versaoDados: "2026-05-31"
     },
     abertura: secaoAbertura,

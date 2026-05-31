@@ -57,6 +57,24 @@
   // Lista única de todas as figurinhas (na ordem do álbum).
   var ALL = A.allCodes.map(function (c) { return A.byCode[c]; });
 
+  // Cores das seleções [cor, cor do texto sobre ela] — identidade visual (sem imagens).
+  var TEAM_COLORS = {
+    MEX:["#006847","#fff"], RSA:["#E8B500","#1f2937"], KOR:["#C8102E","#fff"], CZE:["#11457E","#fff"],
+    CAN:["#D52B1E","#fff"], BIH:["#002F6C","#fff"], QAT:["#8A1538","#fff"], SUI:["#DA291C","#fff"],
+    BRA:["#FFDF00","#14532d"], MAR:["#C1272D","#fff"], HAI:["#00209F","#fff"], SCO:["#0065BD","#fff"],
+    USA:["#0A3161","#fff"], PAR:["#D52B1E","#fff"], AUS:["#00843D","#fff"], TUR:["#E30A17","#fff"],
+    GER:["#1a1a1a","#fff"], CUW:["#002B7F","#fff"], CIV:["#FF8200","#1f2937"], ECU:["#FFD100","#1f2937"],
+    NED:["#EC6608","#1f2937"], JPN:["#BC002D","#fff"], SWE:["#006AA7","#fff"], TUN:["#E70013","#fff"],
+    BEL:["#E30613","#fff"], EGY:["#CE1126","#fff"], IRN:["#239F40","#fff"], NZL:["#1a1a1a","#fff"],
+    ESP:["#AA151B","#fff"], CPV:["#003893","#fff"], KSA:["#006C35","#fff"], URU:["#5CBFEB","#1f2937"],
+    FRA:["#002395","#fff"], SEN:["#00853F","#fff"], IRQ:["#007A3D","#fff"], NOR:["#BA0C2F","#fff"],
+    ARG:["#75AADB","#1f2937"], ALG:["#006233","#fff"], AUT:["#ED2939","#fff"], JOR:["#117A37","#fff"],
+    POR:["#C8102E","#fff"], COD:["#007FFF","#fff"], UZB:["#0099B5","#fff"], COL:["#FCD116","#1f2937"],
+    ENG:["#002366","#fff"], CRO:["#ED1C24","#fff"], GHA:["#006B3F","#fff"], PAN:["#005293","#fff"],
+    fwc:["#C9A227","#1f2937"], coke:["#E61A27","#fff"]
+  };
+  function teamColor(code) { return TEAM_COLORS[code] || ["#1d4ed8", "#fff"]; }
+
   // --------------------------- Estatísticas ---------------------------------
   function stats() {
     var have = 0, rep = 0, foilHave = 0, foilTotal = 0;
@@ -130,7 +148,9 @@
     var grid = gridHTML(stickers);
     if (grid === null) return "";   // filtro escondeu tudo
     var isOpen = openSet[id] || filtering();
-    return '<div class="acc' + (isOpen ? " open" : "") + '" data-acc="' + id + '">' +
+    var col = teamColor(id.indexOf("team-") === 0 ? id.slice(5) : id);
+    return '<div class="acc' + (isOpen ? " open" : "") + '" data-acc="' + id +
+      '" style="--team:' + col[0] + ';--team-ink:' + col[1] + '">' +
       '<button class="acc-head" data-acctoggle="' + id + '">' +
         badge +
         '<span class="ttl">' + esc(title) + (sub ? '<span>' + esc(sub) + '</span>' : '') + '</span>' +
@@ -165,7 +185,7 @@
 
     // Coca-Cola
     html += '<div class="section">' +
-      accHTML(A.coke.id, emojiBadge(A.coke.flag), A.coke.title, "12 figurinhas (fora dos pacotes)", A.coke.stickers) +
+      accHTML(A.coke.id, emojiBadge(A.coke.flag), A.coke.title, "14 figurinhas · CC1–CC14 (nº pode variar)", A.coke.stickers) +
       '</div>';
 
     if (!html.replace(/<div class="section">\s*<\/div>/g, "").trim()) {
@@ -217,7 +237,8 @@
     }
     var h = "";
     groups.forEach(function (g) {
-      h += '<div class="list-group"><h3>' + g.badge + " " + esc(g.label) +
+      var col = teamColor(g.key.indexOf("team-") === 0 ? g.key.slice(5) : g.key);
+      h += '<div class="list-group" style="--team:' + col[0] + ';--team-ink:' + col[1] + '"><h3>' + g.badge + " " + esc(g.label) +
         ' <span class="cnt">— faltam ' + g.items.length + '</span></h3><div class="pillrow">';
       g.items.forEach(function (s) { h += pillHTML(s, false); });
       h += "</div></div>";
@@ -241,7 +262,8 @@
     var h = "";
     groups.forEach(function (g) {
       var tot = g.items.reduce(function (a, s) { return a + dupes(s.code); }, 0);
-      h += '<div class="list-group"><h3>' + g.badge + " " + esc(g.label) +
+      var col = teamColor(g.key.indexOf("team-") === 0 ? g.key.slice(5) : g.key);
+      h += '<div class="list-group" style="--team:' + col[0] + ';--team-ink:' + col[1] + '"><h3>' + g.badge + " " + esc(g.label) +
         ' <span class="cnt">— ' + tot + ' p/ trocar</span></h3><div class="pillrow">';
       g.items.forEach(function (s) { h += pillHTML(s, true); });
       h += "</div></div>";
@@ -319,9 +341,11 @@
     if (tag === "L" && typeof LZString !== "undefined") raw = LZString.decompressFromEncodedURIComponent(body);
     else if (tag === "R") raw = body;
     else raw = s;
-    if (!raw || raw.length !== ALL.length) return null;
+    if (!raw) return null;
+    // tolerante a mudança de tamanho: decodifica o prefixo que coincide.
+    // Como só ACRESCENTAMOS figurinhas no fim, links antigos continuam válidos.
     var owned = {};
-    for (var i = 0; i < raw.length; i++) {
+    for (var i = 0; i < raw.length && i < ALL.length; i++) {
       var c = parseInt(raw.charAt(i), 36); if (isNaN(c)) c = 0;
       if (c > 0) owned[ALL[i].code] = c;
     }
@@ -754,6 +778,17 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { el.classList.remove("show"); }, 2200);
   }
+  var updatePending = false;
+  function showUpdateBanner(worker) {
+    var bar = document.getElementById("updateBar");
+    if (!bar) return;
+    bar.classList.add("show");
+    document.getElementById("btnUpdate").onclick = function () {
+      bar.classList.remove("show");
+      updatePending = true;
+      if (worker) worker.postMessage({ type: "SKIP_WAITING" });  // ativa a nova versão -> recarrega
+    };
+  }
   function copyText(text, okMsg) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function () { toast(okMsg); },
@@ -787,7 +822,24 @@
 
     // Service worker (offline) — só funciona via http(s), não em file://
     if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
-      navigator.serviceWorker.register("service-worker.js").catch(function () {});
+      navigator.serviceWorker.register("service-worker.js").then(function (reg) {
+        // já existe uma versão nova esperando?
+        if (reg.waiting && navigator.serviceWorker.controller) showUpdateBanner(reg.waiting);
+        // detecta quando uma nova versão termina de baixar
+        reg.addEventListener("updatefound", function () {
+          var nw = reg.installing;
+          if (!nw) return;
+          nw.addEventListener("statechange", function () {
+            if (nw.state === "installed" && navigator.serviceWorker.controller) showUpdateBanner(nw);
+          });
+        });
+      }).catch(function () {});
+      // recarrega 1x quando a nova versão assume o controle — só se o usuário
+      // tocou em "Atualizar" (evita reload extra na 1ª instalação via clients.claim)
+      var swReloaded = false;
+      navigator.serviceWorker.addEventListener("controllerchange", function () {
+        if (updatePending && !swReloaded) { swReloaded = true; location.reload(); }
+      });
     }
   }
 

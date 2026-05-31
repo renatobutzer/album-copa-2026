@@ -1,7 +1,7 @@
 /* Service worker — deixa o app funcionar offline.
    Estratégia: cache-first para a "casca" do app; atualiza em segundo plano.
    Ao publicar uma nova versão, troque CACHE_VERSION para forçar atualização. */
-var CACHE_VERSION = "copa2026-v2";
+var CACHE_VERSION = "copa2026-v4";
 var ASSETS = [
   ".",
   "index.html",
@@ -15,11 +15,19 @@ var ASSETS = [
 ];
 
 self.addEventListener("install", function (e) {
+  // NÃO faz skipWaiting automático: o novo SW fica "esperando" e o app mostra
+  // o aviso "nova versão disponível". O skipWaiting só ocorre quando o usuário
+  // toca em "Atualizar" (mensagem SKIP_WAITING abaixo).
   e.waitUntil(
     caches.open(CACHE_VERSION).then(function (cache) {
       return cache.addAll(ASSETS).catch(function () { /* ignora itens ausentes */ });
-    }).then(function () { return self.skipWaiting(); })
+    })
   );
+});
+
+// O app pede para ativar a nova versão quando o usuário toca em "Atualizar".
+self.addEventListener("message", function (e) {
+  if (e.data && e.data.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("activate", function (e) {

@@ -4,7 +4,8 @@ App pessoal (PWA) para controlar o álbum **Panini FIFA World Cup 2026**:
 marcar o que já tenho, contar as **repetidas** e ver o que **falta** — com lista
 pronta para colar no WhatsApp e trocar com os amigos.
 
-- **992 figurinhas**: 980 do álbum base + 12 do insert Coca-Cola
+- **994 figurinhas**: 980 do álbum base + 14 do insert Coca-Cola (CC1–CC14, edição Brasil)
+- Cada seleção com **suas cores** (a arte oficial da Panini não é usada — fica só no app oficial)
 - Funciona **offline** e instala como ícone no celular (Android e iPhone)
 - Tudo salvo **no próprio aparelho** (nada vai para a internet)
 
@@ -53,13 +54,18 @@ dentro do próprio link. Cada um continua com os dados no seu aparelho.
 1. Crie uma conta em <https://github.com> (se ainda não tiver).
 2. Clique em **New repository** → nome `figurinhas-2026` → deixe **Public** → **Create**.
 3. Na página do repositório, clique em **"uploading an existing file"**.
-4. **Arraste todos os arquivos desta pasta** (inclusive as pastas `data/` e `icons/`)
-   para a área de upload (inclusive as pastas `data/`, `icons/` e `vendor/`) e clique em **Commit changes**.
+4. **Arraste todos os arquivos desta pasta** para a área de upload — inclusive as
+   subpastas `data/`, `icons/` e `vendor/` — e clique em **Commit changes**.
 5. Vá em **Settings → Pages** → em *Branch* escolha **main** / **/ (root)** → **Save**.
 6. Aguarde ~1 minuto. O endereço do app aparece ali, algo como:
    `https://SEU-USUARIO.github.io/figurinhas-2026/`
 7. Abra esse endereço **no celular** → menu do navegador → **"Adicionar à tela inicial"**.
    Pronto: vira um ícone igual a um app. ✅
+
+> 🔄 **Para publicar uma atualização depois:** suba os arquivos alterados (no mesmo
+> repositório) e **aumente o número em `service-worker.js`** (linha `CACHE_VERSION`,
+> ex.: `copa2026-v3` → `copa2026-v4`). Quem usa verá o aviso **"Nova versão disponível
+> → Atualizar"** e ninguém perde o progresso.
 
 ---
 
@@ -71,8 +77,9 @@ dentro do próprio link. Cada um continua com os dados no seu aparelho.
 | `style.css` | Visual (cores, layout, tema claro/escuro) |
 | `app.js` | Toda a lógica (marcar, filtrar, compartilhar, backup) |
 | `data/album.js` | A **checklist** das 992 figurinhas (edite aqui p/ acrescentar nomes) |
-| `manifest.json` + `service-worker.js` | Fazem funcionar offline e instalar como app |
+| `manifest.json` + `service-worker.js` | Fazem funcionar offline, instalar como app e avisar de nova versão |
 | `icons/` | Ícones do app |
+| `vendor/` | Bibliotecas (compressão do link de troca + gerador de QR) |
 
 ---
 
