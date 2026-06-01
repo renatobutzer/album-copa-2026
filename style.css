@@ -181,9 +181,10 @@ header {
 .mm-seg { display: inline-flex; background: var(--surface-2); border: 1px solid var(--border);
   border-radius: 999px; padding: 3px; }
 .mm-opt { border: none; background: transparent; color: var(--text-dim); font-weight: 800;
-  font-size: .82rem; padding: 8px 16px; border-radius: 999px; transition: background .15s, color .15s; }
+  font-size: .8rem; padding: 8px 12px; border-radius: 999px; transition: background .15s, color .15s; }
 .mm-opt.active { background: var(--brand); color: var(--brand-ink); }
 .mm-opt[data-mode="dup"].active { background: var(--rep-bg); color: var(--rep-ink); }
+.mm-opt[data-mode="bulk"].active { background: #7c3aed; color: #fff; }
 /* pista visual quando o modo repetida está ligado */
 body.mode-dup #hint { color: var(--rep-bg); font-weight: 700; }
 body.mode-dup .cell .plus { background: var(--rep-bg); color: var(--rep-ink); }
@@ -252,8 +253,16 @@ html[data-theme^="expressive"] .tier { border-radius: 16px; }
 .flag.emoji { font-size: 1.4rem; line-height: 1; }
 .acc-head .ttl { flex: 1; font-weight: 700; font-size: .98rem; }
 .acc-head .ttl span { display:block; font-weight:500; font-size:.74rem; color: var(--text-dim); }
-.mini-prog { font-size: .76rem; color: var(--text-dim); font-weight: 700; text-align:right; min-width:64px;}
+.mini-prog { font-size: .76rem; color: var(--text-dim); font-weight: 700; text-align:right; min-width:46px;}
 .mini-prog b { color: var(--tenho-bg); }
+/* botão "Tudo" (marcar todas) / "Limpar" no cabeçalho da seleção */
+.markall {
+  flex: 0 0 auto; font-size: .7rem; font-weight: 800; padding: 6px 10px; border-radius: 8px;
+  background: var(--surface); color: var(--brand); border: 1px solid var(--border);
+  white-space: nowrap; line-height: 1;
+}
+.acc.done .markall { color: var(--text-dim); }
+html[data-theme^="expressive"] .markall { border-radius: 999px; }
 .chev { color: var(--text-dim); transition: transform .2s; font-size:.9rem; }
 .acc.open .chev { transform: rotate(90deg); }
 

@@ -174,6 +174,7 @@
         badge +
         '<span class="ttl">' + esc(title) + (sub ? '<span>' + esc(sub) + '</span>' : '') + '</span>' +
         '<span class="mini-prog">' + (done ? '🏆 ' : '') + '<b>' + got + '</b>/' + total + '</span>' +
+        (markMode === "bulk" ? '<span class="markall" data-markall="' + id + '" role="button" title="Marcar todas (ou limpar)">' + (done ? 'Limpar' : 'Tudo') + '</span>' : '') +
         '<span class="chev">▶</span>' +
       '</button>' +
       '<div class="acc-body">' + (isOpen ? grid : "") + '</div>' +
@@ -516,6 +517,45 @@
   function removeDupe(code) {
     if (count(code) >= 2) { setCount(code, count(code) - 1); afterChange(); }
   }
+  // Figurinhas de uma seção (abertura / time / coca-cola) a partir do id do accordion.
+  function stickersForAcc(id) {
+    if (id === "fwc") return A.abertura.stickers;
+    if (id === "coke") return A.coke.stickers;
+    if (id.indexOf("team-") === 0) {
+      var code = id.slice(5), res = [];
+      A.grupos.forEach(function (g) { g.teams.forEach(function (t) { if (t.code === code) res = t.stickers; }); });
+      return res;
+    }
+    return [];
+  }
+  // Nome amigável da seção (para a mensagem de confirmação).
+  function sectionName(id) {
+    if (id === "fwc") return A.abertura.title;
+    if (id === "coke") return A.coke.title;
+    if (id.indexOf("team-") === 0) {
+      var code = id.slice(5), nm = code;
+      A.grupos.forEach(function (g) { g.teams.forEach(function (t) { if (t.code === code) nm = t.name; }); });
+      return nm;
+    }
+    return "esta seção";
+  }
+  // Botão "Tudo": marca todas as que faltam (mantém repetidas). Se já está
+  // completa, limpa tudo. Pede CONFIRMAÇÃO nas duas ações (evita toque acidental).
+  function markAllTeam(id) {
+    var sts = stickersForAcc(id);
+    if (!sts.length) return;
+    var allHave = sts.every(function (s) { return have(s.code); });
+    // "Tudo" (marcar) é direto — já estamos no modo "Várias", ativado de propósito.
+    // "Limpar" apaga tudo (incl. repetidas), então pede confirmação.
+    if (allHave) {
+      if (!confirm('Limpar TODAS as marcações de "' + sectionName(id) + '"?\n\nIsso remove o que você tem e também as repetidas dessa seleção.')) return;
+    }
+    sts.forEach(function (s) {
+      if (allHave) setCount(s.code, 0);
+      else if (count(s.code) === 0) setCount(s.code, 1);
+    });
+    afterChange();
+  }
 
   function afterChange() {
     refreshChrome();
@@ -606,16 +646,18 @@
   //  EVENTOS
   // =========================================================================
   function setMode(m) {
-    markMode = (m === "dup") ? "dup" : "have";
+    markMode = (m === "dup" || m === "bulk") ? m : "have";
     var opts = document.querySelectorAll("#markmode .mm-opt");
     for (var i = 0; i < opts.length; i++) {
       opts[i].classList.toggle("active", opts[i].getAttribute("data-mode") === markMode);
     }
     document.body.classList.toggle("mode-dup", markMode === "dup");
     var hint = document.getElementById("hint");
-    if (hint) hint.innerHTML = markMode === "dup"
-      ? "🔄 <b>Modo repetida</b>: cada toque soma +1 · toque no ×N para tirar · segure para editar"
+    if (hint) hint.innerHTML =
+      markMode === "dup" ? "🔄 <b>Modo repetida</b>: cada toque soma +1 · toque no ×N para tirar · segure para editar"
+      : markMode === "bulk" ? "⚡ <b>Modo várias</b>: toque em <b>Tudo</b> no cabeçalho da seleção pra marcar todas de uma vez"
       : "Toque para marcar que tem · toque no <b>+</b> para repetida · segure para editar nome";
+    renderAlbum();   // mostra/esconde os botões "Tudo" das seleções
   }
 
   function bind() {
@@ -626,6 +668,9 @@
 
     // Delegação de cliques no álbum
     document.getElementById("album").addEventListener("click", function (e) {
+      // "Tudo" / "Limpar": marca (ou limpa) todas as figurinhas da seção
+      var ma = e.target.closest("[data-markall]");
+      if (ma) { markAllTeam(ma.getAttribute("data-markall")); return; }
       var toggle = e.target.closest("[data-acctoggle]");
       if (toggle) {
         var id = toggle.getAttribute("data-acctoggle");
