@@ -11,7 +11,7 @@
   var A = window.ALBUM;
 
   // ----------------------------- Estado ------------------------------------
-  var state = { owned: {}, names: {}, theme: "expressive", shareName: "" };  // padrão: Material Expressive claro
+  var state = { owned: {}, names: {}, legends: {}, theme: "expressive", shareName: "" };  // padrão: Material Expressive claro
 
   function load() {
     try {
@@ -20,6 +20,7 @@
         var p = JSON.parse(raw);
         state.owned = p.owned || {};
         state.names = p.names || {};
+        state.legends = p.legends || {};
         state.theme = p.theme || "expressive";
         state.shareName = p.shareName || "";
       }
@@ -74,6 +75,22 @@
     fwc:["#C9A227","#1f2937"], coke:["#E61A27","#fff"]
   };
   function teamColor(code) { return TEAM_COLORS[code] || ["#1d4ed8", "#fff"]; }
+
+  // ----- Legends (Extra Stickers): 20 craques × 4 níveis, contador por nível -----
+  var LEGEND_TIERS = [
+    { key: "roxo",   label: "Roxo (base)", color: "#7e3ff2" },
+    { key: "bronze", label: "Bronze",      color: "#b87333" },
+    { key: "prata",  label: "Prata",       color: "#9aa3ad" },
+    { key: "ouro",   label: "Ouro",        color: "#d4af37" }
+  ];
+  function legendCount(id, tier) { return (state.legends[id] && state.legends[id][tier]) || 0; }
+  function setLegendCount(id, tier, n) {
+    n = Math.max(0, n | 0);
+    if (!state.legends[id]) state.legends[id] = {};
+    if (n === 0) delete state.legends[id][tier]; else state.legends[id][tier] = n;
+    if (Object.keys(state.legends[id]).length === 0) delete state.legends[id];
+    save();
+  }
 
   // --------------------------- Estatísticas ---------------------------------
   function stats() {
@@ -156,7 +173,7 @@
       '<button class="acc-head" data-acctoggle="' + id + '">' +
         badge +
         '<span class="ttl">' + esc(title) + (sub ? '<span>' + esc(sub) + '</span>' : '') + '</span>' +
-        '<span class="mini-prog">' + (done ? '✓ ' : '') + '<b>' + got + '</b>/' + total + '</span>' +
+        '<span class="mini-prog">' + (done ? '🏆 ' : '') + '<b>' + got + '</b>/' + total + '</span>' +
         '<span class="chev">▶</span>' +
       '</button>' +
       '<div class="acc-body">' + (isOpen ? grid : "") + '</div>' +
@@ -190,10 +207,73 @@
       accHTML(A.coke.id, emojiBadge(A.coke.flag), A.coke.title, "14 figurinhas · CC1–CC14 (nº pode variar)", A.coke.stickers) +
       '</div>';
 
+    // Legends (Extra Stickers) — só no modo "Tudo" (fora dos filtros de figurinha)
+    if (A.legends && !filtering()) html += renderLegends();
+
     if (!html.replace(/<div class="section">\s*<\/div>/g, "").trim()) {
       html = '<div class="empty"><div class="big">🔍</div>Nada encontrado com esse filtro/busca.</div>';
     }
     el.innerHTML = html;
+  }
+
+  // ----- Render da seção Legends -----
+  function legendsStats() {
+    var total = A.legends.length * LEGEND_TIERS.length; // 80
+    var got = 0;
+    A.legends.forEach(function (L) {
+      LEGEND_TIERS.forEach(function (t) { if (legendCount(L.id, t.key) > 0) got++; });
+    });
+    return { got: got, total: total };
+  }
+  function tiersHTML(id) {
+    var h = '<div class="tiers">';
+    LEGEND_TIERS.forEach(function (t) {
+      var n = legendCount(id, t.key);
+      h += '<div class="tier' + (n > 0 ? " has" : "") + '">' +
+        '<span class="tier-dot" style="background:' + t.color + '"></span>' +
+        '<span class="tier-name">' + t.label + '</span>' +
+        '<span class="tier-ctrl">' +
+          '<button class="step-btn sm" data-lg="' + id + '" data-tier="' + t.key + '" data-lgact="dec">−</button>' +
+          '<span class="tier-n">' + n + '</span>' +
+          '<button class="step-btn sm" data-lg="' + id + '" data-tier="' + t.key + '" data-lgact="inc">+</button>' +
+        '</span>' +
+      '</div>';
+    });
+    return h + '</div>';
+  }
+  function renderLegends() {
+    var st = legendsStats();
+    var prog = st.total ? Math.round((st.got / st.total) * 100) : 0;
+    var done = st.got === st.total && st.total > 0;
+    var open = !!openSet["legends"];
+    var body = "";
+    if (open) {
+      A.legends.forEach(function (L) {
+        var col = teamColor(L.id);
+        var pOpen = !!openSet["lg-" + L.id];
+        var ownedT = LEGEND_TIERS.filter(function (t) { return legendCount(L.id, t.key) > 0; });
+        var sum = ownedT.length ? ownedT.map(function (t) { return t.label.replace(" (base)", ""); }).join(" · ") : "—";
+        body += '<div class="lg' + (pOpen ? " open" : "") + '" style="--team:' + col[0] + ';--team-ink:' + col[1] + '">' +
+          '<button class="lg-head" data-lgtoggle="' + L.id + '">' +
+            '<span class="flag code3">' + L.id + '</span>' +
+            '<span class="ttl">' + esc(L.name) + '<span>' + esc(L.country) + '</span></span>' +
+            '<span class="lg-sum">' + esc(sum) + '</span>' +
+            '<span class="chev">▶</span>' +
+          '</button>' +
+          '<div class="lg-body">' + (pOpen ? tiersHTML(L.id) : "") + '</div>' +
+        '</div>';
+      });
+    }
+    return '<div class="section"><div class="acc' + (open ? " open" : "") + (done ? " done" : "") +
+      '" data-acc="legends" style="--team:#7e3ff2;--team-ink:#fff;--progress:' + prog + '%">' +
+      '<button class="acc-head" data-acctoggle="legends">' +
+        '<span class="flag emoji">⭐</span>' +
+        '<span class="ttl">Legends<span>20 craques · não colam no álbum</span></span>' +
+        '<span class="mini-prog">' + (done ? "🏆 " : "") + '<b>' + st.got + '</b>/' + st.total + '</span>' +
+        '<span class="chev">▶</span>' +
+      '</button>' +
+      '<div class="acc-body">' + body + '</div>' +
+    '</div></div>';
   }
 
   // =========================================================================
@@ -550,6 +630,23 @@
       if (toggle) {
         var id = toggle.getAttribute("data-acctoggle");
         openSet[id] = !openSet[id];
+        renderAlbum();
+        return;
+      }
+      // Legends: expandir um jogador (dropdown)
+      var lgTog = e.target.closest("[data-lgtoggle]");
+      if (lgTog) {
+        var lid = "lg-" + lgTog.getAttribute("data-lgtoggle");
+        openSet[lid] = !openSet[lid];
+        renderAlbum();
+        return;
+      }
+      // Legends: − / + de um nível (conta repetidas)
+      var lgBtn = e.target.closest("[data-lgact]");
+      if (lgBtn) {
+        var gid = lgBtn.getAttribute("data-lg"), tier = lgBtn.getAttribute("data-tier");
+        var cur = legendCount(gid, tier);
+        setLegendCount(gid, tier, lgBtn.getAttribute("data-lgact") === "inc" ? cur + 1 : cur - 1);
         renderAlbum();
         return;
       }

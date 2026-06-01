@@ -208,9 +208,38 @@ main { padding: 6px 14px 20px; max-width: 760px; margin: 0 auto; }
     var(--fill) 0%, var(--fill2) var(--progress, 0%), transparent var(--progress, 0%));
   transition: background .4s ease;
 }
-/* seleção 100% completa */
-.acc.done .mini-prog { color: var(--tenho-bg); }
+/* seleção 100% completa — destaque com borda + brilho na cor do time */
+.acc.done {
+  border-color: var(--team, var(--brand));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--team, var(--brand)) 60%, transparent),
+              0 8px 22px -8px var(--team, var(--brand));
+}
+.acc.done .mini-prog { color: var(--tenho-bg); font-weight: 800; }
 .acc.done .mini-prog b { color: var(--tenho-bg); }
+
+/* ---- Legends (Extra Stickers): jogador (dropdown) + contadores por nível ---- */
+.lg { border-top: 1px solid var(--border); }
+.lg:first-child { border-top: none; }
+.lg-head { display: flex; align-items: center; gap: 10px; width: 100%; background: transparent;
+  border: none; color: var(--text); text-align: left; padding: 11px 4px; }
+.lg-head .flag.code3 { width: 42px; padding: 6px 0; font-size: .66rem; }
+.lg-head .ttl { flex: 1; font-weight: 700; font-size: .92rem; line-height: 1.15; }
+.lg-head .ttl span { display: block; font-weight: 500; font-size: .72rem; color: var(--text-dim); }
+.lg-head .lg-sum { font-size: .68rem; color: var(--text-dim); text-align: right; max-width: 96px; line-height: 1.2; }
+.lg-head .chev { color: var(--text-dim); font-size: .9rem; transition: transform .2s; }
+.lg.open .lg-head .chev { transform: rotate(90deg); }
+.lg-body { display: none; padding: 2px 2px 12px; }
+.lg.open .lg-body { display: block; }
+.tiers { display: flex; flex-direction: column; gap: 8px; }
+.tier { display: flex; align-items: center; gap: 11px; background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px; }
+.tier.has { border-color: var(--team, var(--brand)); }
+.tier-dot { width: 15px; height: 15px; border-radius: 50%; flex: 0 0 auto; box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); }
+.tier-name { flex: 1; font-weight: 700; font-size: .86rem; }
+.tier-ctrl { display: flex; align-items: center; gap: 12px; }
+.step-btn.sm { width: 34px; height: 34px; font-size: 1.25rem; border-radius: 9px; }
+.tier-n { min-width: 20px; text-align: center; font-weight: 800; font-size: 1.05rem; }
+html[data-theme^="expressive"] .tier { border-radius: 16px; }
 .acc-head .flag { font-size: 1.4rem; line-height: 1; }
 /* badge com o código de 3 letras do álbum (MEX, BRA, GER...) — substitui a bandeira */
 .flag.code3 {

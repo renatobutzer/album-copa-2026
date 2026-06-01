@@ -126,28 +126,54 @@ window.ALBUM = (function () {
 
   /* -------------------------------------------------------------------------
      4) INSERT COCA-COLA — edição BRASIL/LATAM: 14 figurinhas (CC1–CC14)
-        (EUA/Canadá = 12; Brasil = 14 — confirmado pela Coca-Cola Brasil.)
-        ✓ = número confirmado pela FOTO do álbum do Renato (espaços vazios):
-            CC3 Raúl Jiménez · CC4 Lautaro · CC6 Valverde · CC8 Enner Valencia
-            · CC9 Gabriel Magalhães · CC12 Emiliano Martínez.
-        (a confirmar) = jogador certo, mas o número está coberto pela figurinha
-            colada na foto — ordem provisória, conferir no álbum (editável).
+        Numeração 100% CONFIRMADA pelo Renato lendo o álbum físico (31/05/2026).
+        Foil não confirmado (tratado como normal). Vão nas contracapas do final.
      ------------------------------------------------------------------------- */
   const COCACOLA = [
-    { code: "CC1",  pos: "CC1",  name: "Alphonso Davies — Canadá",      foil: false }, // a confirmar
-    { code: "CC2",  pos: "CC2",  name: "Harry Kane — Inglaterra",       foil: false }, // a confirmar
-    { code: "CC3",  pos: "CC3",  name: "Raúl Jiménez — México",         foil: false }, // ✓ foto
-    { code: "CC4",  pos: "CC4",  name: "Lautaro Martínez — Argentina",  foil: false }, // ✓ foto
-    { code: "CC5",  pos: "CC5",  name: "Jefferson Lerma — Colômbia",    foil: false }, // a confirmar
-    { code: "CC6",  pos: "CC6",  name: "Federico Valverde — Uruguai",   foil: false }, // ✓ foto
-    { code: "CC7",  pos: "CC7",  name: "Joshua Kimmich — Alemanha",     foil: false }, // a confirmar
-    { code: "CC8",  pos: "CC8",  name: "Enner Valencia — Equador",      foil: false }, // ✓ foto
-    { code: "CC9",  pos: "CC9",  name: "Gabriel Magalhães — Brasil",    foil: false }, // ✓ foto
-    { code: "CC10", pos: "CC10", name: "Joško Gvardiol — Croácia",      foil: false }, // a confirmar
-    { code: "CC11", pos: "CC11", name: "Lamine Yamal — Espanha",        foil: false }, // a confirmar
-    { code: "CC12", pos: "CC12", name: "Emiliano Martínez — Argentina", foil: false }, // ✓ foto
-    { code: "CC13", pos: "CC13", name: "Santiago Giménez — México",     foil: false }, // a confirmar
-    { code: "CC14", pos: "CC14", name: "Virgil van Dijk — Holanda",     foil: false }, // a confirmar
+    { code: "CC1",  pos: "CC1",  name: "Lamine Yamal — Espanha",        foil: false },
+    { code: "CC2",  pos: "CC2",  name: "Joshua Kimmich — Alemanha",     foil: false },
+    { code: "CC3",  pos: "CC3",  name: "Harry Kane — Inglaterra",       foil: false },
+    { code: "CC4",  pos: "CC4",  name: "Santiago Giménez — México",     foil: false },
+    { code: "CC5",  pos: "CC5",  name: "Joško Gvardiol — Croácia",      foil: false },
+    { code: "CC6",  pos: "CC6",  name: "Federico Valverde — Uruguai",   foil: false },
+    { code: "CC7",  pos: "CC7",  name: "Jefferson Lerma — Colômbia",    foil: false },
+    { code: "CC8",  pos: "CC8",  name: "Enner Valencia — Equador",      foil: false },
+    { code: "CC9",  pos: "CC9",  name: "Gabriel Magalhães — Brasil",    foil: false },
+    { code: "CC10", pos: "CC10", name: "Virgil van Dijk — Holanda",     foil: false },
+    { code: "CC11", pos: "CC11", name: "Alphonso Davies — Canadá",      foil: false },
+    { code: "CC12", pos: "CC12", name: "Emiliano Martínez — Argentina", foil: false },
+    { code: "CC13", pos: "CC13", name: "Raúl Jiménez — México",         foil: false },
+    { code: "CC14", pos: "CC14", name: "Lautaro Martínez — Argentina",  foil: false },
+  ];
+
+  /* -------------------------------------------------------------------------
+     5) LEGENDS / "Extra Stickers" — NÃO colam no álbum (bônus raros).
+        20 craques atuais (1 por país), cada um em 4 níveis: Roxo (base) /
+        Bronze / Prata / Ouro = 80 no total. Sem número no verso.
+        Fonte: imprensa BR (Exame, ND Mais, NSC) + SoccerStickersFC / ChecklistInsider.
+        id = código do país (reaproveita a cor oficial do time).
+     ------------------------------------------------------------------------- */
+  const LEGENDS = [
+    { id:"ARG", name:"Lionel Messi",        country:"Argentina" },
+    { id:"BEL", name:"Jérémy Doku",         country:"Bélgica" },
+    { id:"BRA", name:"Vinícius Júnior",     country:"Brasil" },
+    { id:"CAN", name:"Alphonso Davies",     country:"Canadá" },
+    { id:"COL", name:"Luis Díaz",           country:"Colômbia" },
+    { id:"CRO", name:"Luka Modrić",         country:"Croácia" },
+    { id:"ECU", name:"Moisés Caicedo",      country:"Equador" },
+    { id:"EGY", name:"Mohamed Salah",       country:"Egito" },
+    { id:"ENG", name:"Jude Bellingham",     country:"Inglaterra" },
+    { id:"FRA", name:"Kylian Mbappé",       country:"França" },
+    { id:"GER", name:"Florian Wirtz",       country:"Alemanha" },
+    { id:"KOR", name:"Son Heung-min",       country:"Coreia do Sul" },
+    { id:"MEX", name:"Raúl Jiménez",        country:"México" },
+    { id:"MAR", name:"Achraf Hakimi",       country:"Marrocos" },
+    { id:"NED", name:"Cody Gakpo",          country:"Holanda" },
+    { id:"NOR", name:"Erling Haaland",      country:"Noruega" },
+    { id:"POR", name:"Cristiano Ronaldo",   country:"Portugal" },
+    { id:"ESP", name:"Lamine Yamal",        country:"Espanha" },
+    { id:"URU", name:"Federico Valverde",   country:"Uruguai" },
+    { id:"USA", name:"Christian Pulisic",   country:"Estados Unidos" },
   ];
 
   /* =========================================================================
@@ -240,6 +266,7 @@ window.ALBUM = (function () {
     abertura: secaoAbertura,
     grupos: grupos,
     coke: secaoCoke,
+    legends: LEGENDS,
     byCode: byCode,
     allCodes: allCodes
   };
