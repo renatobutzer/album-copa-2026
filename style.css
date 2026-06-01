@@ -199,8 +199,18 @@ main { padding: 6px 14px 20px; max-width: 760px; margin: 0 auto; }
 .acc + .acc { margin-top: 10px; }
 .acc-head {
   display: flex; align-items: center; gap: 10px; padding: 13px 14px; width: 100%;
-  background: transparent; border: none; color: var(--text); text-align: left;
+  border: none; color: var(--text); text-align: left;
+  /* barra de progresso: enche na cor do time conforme preenche (var --progress) */
+  --fill:  color-mix(in srgb, var(--team, var(--brand)) 45%, var(--surface));
+  --fill2: color-mix(in srgb, var(--team, var(--brand)) 22%, var(--surface));
+  background: transparent;
+  background: linear-gradient(90deg,
+    var(--fill) 0%, var(--fill2) var(--progress, 0%), transparent var(--progress, 0%));
+  transition: background .4s ease;
 }
+/* seleção 100% completa */
+.acc.done .mini-prog { color: var(--tenho-bg); }
+.acc.done .mini-prog b { color: var(--tenho-bg); }
 .acc-head .flag { font-size: 1.4rem; line-height: 1; }
 /* badge com o código de 3 letras do álbum (MEX, BRA, GER...) — substitui a bandeira */
 .flag.code3 {

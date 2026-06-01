@@ -149,12 +149,14 @@
     if (grid === null) return "";   // filtro escondeu tudo
     var isOpen = openSet[id] || filtering();
     var col = teamColor(id.indexOf("team-") === 0 ? id.slice(5) : id);
-    return '<div class="acc' + (isOpen ? " open" : "") + '" data-acc="' + id +
-      '" style="--team:' + col[0] + ';--team-ink:' + col[1] + '">' +
+    var prog = total ? Math.round((got / total) * 100) : 0;   // cada figurinha ~5% (20 por time)
+    var done = total > 0 && got === total;
+    return '<div class="acc' + (isOpen ? " open" : "") + (done ? " done" : "") + '" data-acc="' + id +
+      '" style="--team:' + col[0] + ';--team-ink:' + col[1] + ';--progress:' + prog + '%">' +
       '<button class="acc-head" data-acctoggle="' + id + '">' +
         badge +
         '<span class="ttl">' + esc(title) + (sub ? '<span>' + esc(sub) + '</span>' : '') + '</span>' +
-        '<span class="mini-prog"><b>' + got + '</b>/' + total + '</span>' +
+        '<span class="mini-prog">' + (done ? '✓ ' : '') + '<b>' + got + '</b>/' + total + '</span>' +
         '<span class="chev">▶</span>' +
       '</button>' +
       '<div class="acc-body">' + (isOpen ? grid : "") + '</div>' +
