@@ -9,16 +9,21 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400&family=Outfit:wght@400;500;600;700;800;900&family=Paytone+One&family=Sora:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <!-- ===================== CABEÇALHO ===================== -->
   <header>
+    <div class="head-bignum" aria-hidden="true">26</div>
     <div class="head-row">
-      <div class="head-title">⚽ Álbum Copa 2026
+      <div class="head-title">Álbum Copa 2026
         <small id="headSub">Panini · 994 figurinhas</small>
       </div>
+      <button class="icon-btn" id="btnLayout" title="Trocar layout" aria-label="Trocar layout">🎨</button>
       <button class="icon-btn" id="btnConfig" title="Ajustes" aria-label="Ajustes">⚙️</button>
     </div>
     <div class="progress-wrap">
@@ -119,17 +124,16 @@
       </div>
       <div class="card">
         <h2>🎨 Aparência</h2>
-        <label for="themeSelect" style="display:block;font-size:.85rem;color:var(--text-dim);margin-bottom:8px">Tema do app (muda na hora):</label>
+        <label for="themeSelect" style="display:block;font-size:.85rem;color:var(--text-dim);margin-bottom:8px">Layout do app (muda na hora):</label>
         <div class="select-wrap">
-          <select id="themeSelect" class="theme-select" aria-label="Escolher tema" autocomplete="off">
-            <option value="auto">🌗 Automático (segue o sistema)</option>
-            <option value="light">☀️ Claro</option>
-            <option value="dark">🌙 Escuro</option>
-            <option value="oled">⬛ Preto total (OLED)</option>
-            <option value="expressive">🟢 Material Expressive (claro)</option>
-            <option value="expressive-dark">🌲 Material Expressive (escuro)</option>
+          <select id="themeSelect" class="theme-select" aria-label="Escolher layout" autocomplete="off">
+            <option value="figurinha">🃏 Figurinha (estilo álbum)</option>
+            <option value="noturno">🌙 Noturno (escuro)</option>
+            <option value="vibrante">🟢 Vibrante (colorido)</option>
+            <option value="editorial">📰 Editorial (revista)</option>
           </select>
         </div>
+        <div class="note">Atalho: o botão <b>🎨</b> no topo troca o layout rapidinho.</div>
       </div>
       <div class="card">
         <h2>🔄 Atualização</h2>
@@ -194,10 +198,10 @@
 
   <!-- ===================== ABAS ===================== -->
   <nav class="tabbar" id="tabbar">
-    <button class="tab active" data-v="album"><span class="ic">📖</span>Álbum</button>
-    <button class="tab" data-v="faltam"><span class="ic">❌</span>Faltam</button>
-    <button class="tab" data-v="rep"><span class="ic">🔄</span>Repetidas</button>
-    <button class="tab" data-v="share"><span class="ic">📲</span>Trocar</button>
+    <button class="tab active" data-v="album"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM12 5v14"/></svg></span>Álbum</button>
+    <button class="tab" data-v="faltam"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></span>Faltam</button>
+    <button class="tab" data-v="rep"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L20 7"/><path d="M20 3v4h-4"/><path d="M21 12a9 9 0 0 1-15 6.7L4 17"/><path d="M4 21v-4h4"/></svg></span>Repetidas</button>
+    <button class="tab" data-v="share"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></svg></span>Trocar</button>
   </nav>
 
   <div class="toast" id="toast"></div>
@@ -206,6 +210,18 @@
   <div class="update-bar" id="updateBar">
     <span>✨ Nova versão disponível</span>
     <button id="btnUpdate">Atualizar</button>
+  </div>
+
+  <!-- menu rápido de layout (botão 🎨) -->
+  <div class="lay-sheet" id="laySheet">
+    <div class="bd"></div>
+    <div class="lay-card">
+      <h4>Escolha o layout</h4>
+      <button class="lay-opt" data-lay="figurinha"><span class="em">🃏</span><span class="tx"><b>Figurinha</b><span>Estilo álbum (principal)</span></span><span class="chk">✓</span></button>
+      <button class="lay-opt" data-lay="noturno"><span class="em">🌙</span><span class="tx"><b>Noturno</b><span>Escuro premium</span></span><span class="chk">✓</span></button>
+      <button class="lay-opt" data-lay="vibrante"><span class="em">🟢</span><span class="tx"><b>Vibrante</b><span>Material, colorido</span></span><span class="chk">✓</span></button>
+      <button class="lay-opt" data-lay="editorial"><span class="em">📰</span><span class="tx"><b>Editorial</b><span>Revista premium</span></span><span class="chk">✓</span></button>
+    </div>
   </div>
 
   <script src="vendor/lz-string.min.js"></script>

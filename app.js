@@ -11,7 +11,7 @@
   var A = window.ALBUM;
 
   // ----------------------------- Estado ------------------------------------
-  var state = { owned: {}, names: {}, legends: {}, theme: "expressive", shareName: "" };  // padrão: Material Expressive claro
+  var state = { owned: {}, names: {}, legends: {}, layout: "figurinha", shareName: "" };  // padrão: Figurinha
 
   function load() {
     try {
@@ -21,7 +21,8 @@
         state.owned = p.owned || {};
         state.names = p.names || {};
         state.legends = p.legends || {};
-        state.theme = p.theme || "expressive";
+        // migração: temas antigos -> novos layouts
+        state.layout = p.layout || mapOldTheme(p.theme) || "figurinha";
         state.shareName = p.shareName || "";
       }
     } catch (e) { /* ignora */ }
@@ -165,11 +166,15 @@
     var grid = gridHTML(stickers);
     if (grid === null) return "";   // filtro escondeu tudo
     var isOpen = openSet[id] || filtering();
-    var col = teamColor(id.indexOf("team-") === 0 ? id.slice(5) : id);
+    var teamCode = id.indexOf("team-") === 0 ? id.slice(5) : id;
+    var col = teamColor(teamCode);
     var prog = total ? Math.round((got / total) * 100) : 0;   // cada figurinha ~5% (20 por time)
     var done = total > 0 && got === total;
+    // sigla-fantasma (só para seleções; seções fwc/coke usam emoji)
+    var ghost = (id.indexOf("team-") === 0) ? '<span class="ghost" aria-hidden="true">' + teamCode + '</span>' : '';
     return '<div class="acc' + (isOpen ? " open" : "") + (done ? " done" : "") + '" data-acc="' + id +
       '" style="--team:' + col[0] + ';--team-ink:' + col[1] + ';--progress:' + prog + '%">' +
+      ghost +
       '<button class="acc-head" data-acctoggle="' + id + '">' +
         badge +
         '<span class="ttl">' + esc(title) + (sub ? '<span>' + esc(sub) + '</span>' : '') + '</span>' +
@@ -830,9 +835,19 @@
       });
     }
 
-    // Tema (dropdown)
+    // Layout — dropdown nos Ajustes
     document.getElementById("themeSelect").addEventListener("change", function (e) {
-      setTheme(e.target.value);
+      setLayout(e.target.value);
+    });
+    // Layout — botão 🎨 no topo + menu rápido
+    var laySheet = document.getElementById("laySheet");
+    document.getElementById("btnLayout").addEventListener("click", function () {
+      syncLayoutMenu(); laySheet.classList.add("show");
+    });
+    laySheet.addEventListener("click", function (e) {
+      if (e.target.classList.contains("bd")) { laySheet.classList.remove("show"); return; }
+      var opt = e.target.closest("[data-lay]");
+      if (opt) { setLayout(opt.getAttribute("data-lay")); laySheet.classList.remove("show"); }
     });
 
     // Backup
@@ -850,29 +865,43 @@
   }
 
   // =========================================================================
-  //  TEMA
+  //  LAYOUT (4 estilos: figurinha · noturno · vibrante · editorial)
   // =========================================================================
-  var THEMES = ["auto", "light", "dark", "oled", "expressive", "expressive-dark"];
-  var THEME_LABELS = {
-    auto: "Automático", light: "Claro", dark: "Escuro",
-    oled: "Preto total", expressive: "Expressive", "expressive-dark": "Expressive escuro"
-  };
-  function applyTheme() {
+  var LAYOUTS = ["figurinha", "noturno", "vibrante", "editorial"];
+  var LAYOUT_LABELS = { figurinha: "Figurinha", noturno: "Noturno", vibrante: "Vibrante", editorial: "Editorial" };
+  // converte os temas da versão antiga para os novos layouts
+  function mapOldTheme(t) {
+    if (!t) return null;
+    if (t === "oled" || t === "dark" || t === "expressive-dark") return "noturno";
+    if (t === "expressive") return "figurinha";
+    if (t === "light" || t === "auto") return "figurinha";
+    return null;
+  }
+  function applyLayout() {
     var h = document.documentElement;
-    if (state.theme === "auto") h.removeAttribute("data-theme");
-    else h.setAttribute("data-theme", state.theme);
-    // a barra de status do navegador acompanha a cor do cabeçalho
+    if (LAYOUTS.indexOf(state.layout) === -1) state.layout = "figurinha";
+    h.setAttribute("data-layout", state.layout);
+    // barra de status do navegador acompanha o cabeçalho
     var meta = document.querySelector('meta[name="theme-color"]');
     var hdr = document.querySelector("header");
-    if (meta && hdr) meta.setAttribute("content", getComputedStyle(hdr).backgroundColor);
-    // sincroniza o dropdown com o tema atual
+    if (meta && hdr) {
+      var bg = getComputedStyle(hdr).backgroundColor;
+      if (bg && bg.indexOf("gradient") === -1) meta.setAttribute("content", bg);
+    }
     var sel = document.getElementById("themeSelect");
-    if (sel && sel.value !== state.theme) sel.value = state.theme;
+    if (sel && sel.value !== state.layout) sel.value = state.layout;
+    syncLayoutMenu();
   }
-  function setTheme(name) {
-    if (THEMES.indexOf(name) === -1) name = "auto";
-    state.theme = name; save(); applyTheme();
-    toast("Tema: " + THEME_LABELS[name]);
+  function syncLayoutMenu() {
+    var opts = document.querySelectorAll("#laySheet [data-lay]");
+    for (var i = 0; i < opts.length; i++) {
+      opts[i].classList.toggle("cur", opts[i].getAttribute("data-lay") === state.layout);
+    }
+  }
+  function setLayout(name) {
+    if (LAYOUTS.indexOf(name) === -1) name = "figurinha";
+    state.layout = name; save(); applyLayout();
+    toast("Layout: " + LAYOUT_LABELS[name]);
   }
 
   // =========================================================================
@@ -977,7 +1006,7 @@
   // =========================================================================
   function init() {
     load();
-    applyTheme();
+    applyLayout();
     document.getElementById("headSub").textContent =
       "Panini · " + A.meta.totalComInserts + " figurinhas";
     bind();

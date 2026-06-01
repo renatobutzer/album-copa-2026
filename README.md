@@ -5,6 +5,7 @@ marcar o que já tenho, contar as **repetidas** e ver o que **falta** — com li
 pronta para colar no WhatsApp e trocar com os amigos.
 
 - **994 figurinhas**: 980 do álbum base + 14 do insert Coca-Cola (CC1–CC14, edição Brasil)
+- **4 layouts** (botão 🎨 no topo): Figurinha (padrão), Noturno, Vibrante, Editorial
 - Cada seleção com **suas cores** (a arte oficial da Panini não é usada — fica só no app oficial)
 - Funciona **offline** e instala como ícone no celular (Android e iPhone)
 - Tudo salvo **no próprio aparelho** (nada vai para a internet)
