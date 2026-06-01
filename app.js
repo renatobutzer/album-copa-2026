@@ -704,6 +704,7 @@
         state.owned = {}; state.names = {}; save(); afterChange(); toast("Tudo zerado.");
       }
     });
+    document.getElementById("btnForceUpdate").addEventListener("click", forceUpdate);
   }
 
   // =========================================================================
@@ -790,6 +791,29 @@
       updatePending = true;
       if (worker) worker.postMessage({ type: "SKIP_WAITING" });  // ativa a nova versão -> recarrega
     };
+  }
+  // Botão "forçar atualização": remove o service worker + limpa o cache dos
+  // ARQUIVOS e recarrega (pega tudo fresco da internet). NÃO mexe nas figurinhas
+  // marcadas (localStorage), que ficam intactas.
+  function forceUpdate() {
+    if (typeof navigator.onLine === "boolean" && !navigator.onLine) {
+      toast("Precisa de internet para atualizar 📶"); return;
+    }
+    if (!confirm("Buscar a versão mais nova agora?\n\nO app vai recarregar uma vez. Suas figurinhas marcadas são mantidas.")) return;
+    toast("Atualizando…");
+    var reload = function () { location.reload(); };
+    var p = Promise.resolve();
+    if ("serviceWorker" in navigator) {
+      p = navigator.serviceWorker.getRegistrations().then(function (regs) {
+        return Promise.all(regs.map(function (r) { return r.unregister(); }));
+      });
+    }
+    p.then(function () {
+      if (!("caches" in window)) return null;
+      return caches.keys().then(function (keys) {
+        return Promise.all(keys.map(function (k) { return caches.delete(k); }));
+      });
+    }).then(reload, reload);
   }
   function copyText(text, okMsg) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
