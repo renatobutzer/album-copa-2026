@@ -153,22 +153,26 @@ main { padding: 6px 14px 20px; max-width: 760px; margin: 0 auto; }
 .acc {
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
   overflow: hidden; box-shadow: var(--shadow); position: relative;
-}
-.acc + .acc { margin-top: 10px; }
-.acc-head {
-  display: flex; align-items: center; gap: 10px; padding: 13px 14px; width: 100%;
-  border: none; color: var(--text); text-align: left; position: relative; z-index: 1;
   --fill:  color-mix(in srgb, var(--team, var(--brand)) 45%, var(--surface));
   --fill2: color-mix(in srgb, var(--team, var(--brand)) 22%, var(--surface));
-  background: transparent;
+}
+.acc + .acc { margin-top: 10px; }
+/* barra de progresso = camada de FUNDO (atrás da letra-fantasma) */
+.acc::before {
+  content: ""; position: absolute; left: 0; top: 0; right: 0; bottom: 0; z-index: 0; pointer-events: none;
   background: linear-gradient(90deg, var(--fill) 0%, var(--fill2) var(--progress, 0%), transparent var(--progress, 0%));
   transition: background .4s ease;
 }
-/* sigla-fantasma atrás do card (só layouts com --ghost) */
+.acc-head {
+  display: flex; align-items: center; gap: 10px; padding: 13px 14px; width: 100%;
+  border: none; color: var(--text); text-align: left; position: relative; z-index: 2;
+  background: transparent;
+}
+/* sigla-fantasma: NA FRENTE da barra (z1), atrás do texto (z2) */
 .acc .ghost {
   display: var(--ghost); position: absolute; right: -12px; top: 50%; transform: translateY(-50%);
   font-family: var(--font-fat); font-size: 4.4rem; line-height: .78; letter-spacing: -.04em;
-  color: var(--ghost-fill); pointer-events: none; z-index: 0;
+  color: var(--ghost-fill); pointer-events: none; z-index: 1;
 }
 /* seleção 100% completa — borda + brilho na cor do time */
 .acc.done {
@@ -207,7 +211,7 @@ main { padding: 6px 14px 20px; max-width: 760px; margin: 0 auto; }
 }
 html[data-layout="editorial"] .group-label { font-family: var(--font-title); font-style: italic; text-transform: none; letter-spacing: 0; font-weight:400; font-size:.96rem; }
 
-.acc-body { display: none; padding: 4px 12px 14px; border-top: 1px solid var(--border); position: relative; z-index: 1; background: var(--surface); }
+.acc-body { display: none; padding: 4px 12px 14px; border-top: 1px solid var(--border); position: relative; z-index: 2; background: var(--surface); }
 .acc.open .acc-body { display: block; }
 
 /* -------------------- Grade de figurinhas -------------------- */
