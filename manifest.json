@@ -6,8 +6,8 @@
   "scope": ".",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0b1020",
-  "theme_color": "#1d4ed8",
+  "background_color": "#0f6e39",
+  "theme_color": "#1c8a4a",
   "lang": "pt-BR",
   "categories": ["sports", "utilities"],
   "icons": [
