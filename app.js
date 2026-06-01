@@ -135,7 +135,13 @@
   // =========================================================================
   // Badge mostrado nos cabeçalhos: código de 3 letras p/ seleções, emoji p/ seções.
   function teamBadge(code) { return '<span class="flag code3">' + code + '</span>'; }
-  function emojiBadge(e) { return '<span class="flag emoji">' + e + '</span>'; }
+  // ícones de linha (badges das seções especiais) — combinam com as abas
+  var SVGICON = {
+    trophy: '<svg viewBox="0 0 24 24"><path d="M8 21h8M12 17.5V21M6.5 4h11v4.5a5.5 5.5 0 0 1-11 0V4Z"/><path d="M6.5 6.5H4V8a3 3 0 0 0 3 3M17.5 6.5H20V8a3 3 0 0 1-3 3"/></svg>',
+    cup:    '<svg viewBox="0 0 24 24"><path d="M6 4h12l-1 15a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 4Z"/><path d="M5 9h14"/></svg>',
+    star:   '<svg viewBox="0 0 24 24"><path d="M12 3c.4 3.4 2.6 5.6 6 6-3.4.4-5.6 2.6-6 6-.4-3.4-2.6-5.6-6-6 3.4-.4 5.6-2.6 6-6Z"/></svg>'
+  };
+  function svgFlag(name, cls) { return '<span class="flag svgflag' + (cls ? " " + cls : "") + '">' + SVGICON[name] + '</span>'; }
 
   function cellHTML(s) {
     var c = count(s.code), st = cellState(s.code), d = dupes(s.code);
@@ -192,7 +198,7 @@
 
     // Abertura & FIFA Museum
     html += '<div class="section">' +
-      accHTML(A.abertura.id, emojiBadge(A.abertura.flag), A.abertura.title, "20 figurinhas · todas foil ✨", A.abertura.stickers) +
+      accHTML(A.abertura.id, svgFlag("trophy"), A.abertura.title, "20 figurinhas · todas foil", A.abertura.stickers) +
       '</div>';
 
     // Grupos A–L
@@ -210,7 +216,7 @@
 
     // Coca-Cola
     html += '<div class="section">' +
-      accHTML(A.coke.id, emojiBadge(A.coke.flag), A.coke.title, "14 figurinhas · CC1–CC14 (nº pode variar)", A.coke.stickers) +
+      accHTML(A.coke.id, svgFlag("cup"), A.coke.title, "14 figurinhas · CC1–CC14 (nº pode variar)", A.coke.stickers) +
       '</div>';
 
     // Legends (Extra Stickers) — só no modo "Tudo" (fora dos filtros de figurinha)
@@ -273,7 +279,7 @@
     return '<div class="section"><div class="acc' + (open ? " open" : "") + (done ? " done" : "") +
       '" data-acc="legends" style="--team:#7e3ff2;--team-ink:#fff;--progress:' + prog + '%">' +
       '<button class="acc-head" data-acctoggle="legends">' +
-        '<span class="flag emoji">⭐</span>' +
+        svgFlag("star") +
         '<span class="ttl">Legends<span>20 craques · não colam no álbum</span></span>' +
         '<span class="mini-prog">' + (done ? "🏆 " : "") + '<b>' + st.got + '</b>/' + st.total + '</span>' +
         '<span class="chev">▶</span>' +
@@ -302,13 +308,13 @@
       var sel = stickers.filter(predicate);
       if (sel.length) groups.push({ key: key, label: label, badge: badge, items: sel });
     }
-    pushGroup("fwc", A.abertura.title, emojiBadge(A.abertura.flag), A.abertura.stickers);
+    pushGroup("fwc", A.abertura.title, svgFlag("trophy"), A.abertura.stickers);
     A.grupos.forEach(function (grp) {
       grp.teams.forEach(function (tm) {
         pushGroup("team-" + tm.code, tm.name + " (" + grp.title + ")", teamBadge(tm.code), tm.stickers);
       });
     });
-    pushGroup("coke", A.coke.title, emojiBadge(A.coke.flag), A.coke.stickers);
+    pushGroup("coke", A.coke.title, svgFlag("cup"), A.coke.stickers);
     return groups;
   }
 
@@ -569,7 +575,10 @@
   function refreshChrome() {
     var st = stats();
     document.getElementById("progFill").style.width = pct(st.have, st.total) + "%";
-    document.getElementById("progText").textContent = st.have + " / " + st.total;
+    document.getElementById("progHave").textContent = st.have;
+    document.getElementById("progTotal").textContent = st.total;
+    document.getElementById("chipMiss").textContent = st.miss;
+    document.getElementById("chipRep").textContent = st.rep;
     document.getElementById("progPct").textContent = pct(st.have, st.total) + "%";
     // badge de repetidas na aba
     var repTab = document.querySelector('.tab[data-v="rep"]');
@@ -1007,8 +1016,6 @@
   function init() {
     load();
     applyLayout();
-    document.getElementById("headSub").textContent =
-      "Panini · " + A.meta.totalComInserts + " figurinhas";
     bind();
     refreshChrome();
     showView("album");

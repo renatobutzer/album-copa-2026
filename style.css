@@ -21,22 +21,30 @@
   --foil-speed:17.28s;
 }
 
-/* ---------- NOTURNO — escuro premium, dourado ---------- */
+/* ---------- NOTURNO — preto puro (OLED economiza só com #000) ---------- */
 html[data-layout="noturno"] {
-  --bg:#0B0F14; --surface:#141C26; --surface-2:#1B2533; --text:#EAF0F7;
-  --text-dim:#7E8CA0; --border:#1E2935; --brand:#D9B45B; --brand-ink:#1a1300;
+  --bg:#000000; --surface:#000000; --surface-2:#0c0f14; --text:#EAF0F7;
+  --text-dim:#8390a3; --border:#1b222c; --brand:#D9B45B; --brand-ink:#1a1300;
   --accent:#D9B45B;
-  --falta-bg:#0F1620; --falta-ink:#46566a; --tenho-bg:#1c6f49; --tenho-ink:#eafff2;
+  --falta-bg:#0c0f14; --falta-ink:#48566a; --tenho-bg:#1c6f49; --tenho-ink:#eafff2;
   --rep-bg:#caa23e; --rep-ink:#1a1300;
-  --header-bg:#0E141C; --header-ink:#EAF0F7; --header-ctrl:rgba(255,255,255,.08); --header-track:#1E2935;
+  --header-bg:#000000; --header-ink:#EAF0F7; --header-ctrl:rgba(255,255,255,.10); --header-track:#1b222c;
   --nav-active:#D9B45B; --nav-pill:transparent; --nav-pill-ink:#D9B45B;
   --radius:18px;
   --font:'Sora',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
   --font-title:var(--font);
   --font-fat:'Paytone One','Sora',sans-serif;
   --ghost:block;
-  --ghost-fill:rgba(0,0,0,.34);   /* relevo escuro */
+  --ghost-fill:rgba(255,255,255,.06);   /* cinza escuro sutil sobre o preto */
 }
+/* Noturno: cards/abas/sheet em preto puro, separados por borda (não por cor de superfície) */
+html[data-layout="noturno"] .acc,
+html[data-layout="noturno"] .card,
+html[data-layout="noturno"] .tabbar,
+html[data-layout="noturno"] .sheet,
+html[data-layout="noturno"] .match-card,
+html[data-layout="noturno"] .friend-hero { background: #000000; }
+html[data-layout="noturno"] .acc-body { background: #000000; }
 
 /* ---------- VIBRANTE — Material colorido, claro ---------- */
 html[data-layout="vibrante"] {
@@ -74,7 +82,9 @@ html[data-layout="editorial"] {
 }
 
 :root { --shadow:0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
-        --safe-bottom:env(safe-area-inset-bottom, 0px); --foil-speed:17.28s; }
+        --safe-bottom:env(safe-area-inset-bottom, 0px); --foil-speed:17.28s;
+        /* estrela de 4 pontas (selo foil) */
+        --star-mask:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1c.5 4.5 5 9 10 10-5 .5-9.5 5-10 10-.5-5-5-9.5-10-10C7 9 11.5 5.5 12 1Z" fill="black"/></svg>'); }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; padding: 0; }
@@ -87,51 +97,66 @@ body {
 }
 button { font-family: inherit; cursor: pointer; }
 
-/* -------------------- Cabeçalho -------------------- */
+/* -------------------- Cabeçalho (compacto, barra na base) -------------------- */
 header {
   position: sticky; top: 0; z-index: 50;
   background: var(--header-bg); color: var(--header-ink);
-  padding: 12px 14px; box-shadow: var(--shadow); overflow: hidden;
+  padding: 12px 16px 13px; box-shadow: var(--shadow); overflow: hidden;
 }
 /* "26" gigante de marca d'água (só layouts com --ghost:block) */
 .head-bignum {
-  display: var(--ghost); position: absolute; right: 8px; top: -42px;
-  font-family: var(--font-fat); font-size: 8.5rem; line-height: 1; letter-spacing: -.04em;
-  color: color-mix(in srgb, var(--header-ink) 9%, transparent); pointer-events: none; z-index: 0;
+  display: var(--ghost); position: absolute; right: 10px; top: -36px;
+  font-family: var(--font-fat); font-size: 9rem; line-height: 1; letter-spacing: -.04em;
+  color: color-mix(in srgb, var(--header-ink) 8%, transparent); pointer-events: none; z-index: 0;
 }
-html[data-layout="noturno"] .head-bignum { color: rgba(0,0,0,.4); }
-.head-row { display: flex; align-items: center; gap: 8px; position: relative; z-index: 1; }
-.head-title { font-family: var(--font-title); font-weight: 800; font-size: 1.12rem; letter-spacing: -.01em; flex: 1; }
-.head-title small { display:block; font-family: var(--font); font-weight:500; font-size:.7rem; opacity:.78; letter-spacing:0; }
+.head-top { display: flex; align-items: center; gap: 8px; position: relative; z-index: 1; margin-bottom: 9px; }
+.head-kick { flex: 1; font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: var(--text-dim); }
+html[data-layout="editorial"] .head-kick { letter-spacing: .14em; }
 .icon-btn {
   background: var(--header-ctrl); border: none; color: var(--header-ink);
-  width: 38px; height: 38px; border-radius: 50%; font-size: 1.05rem;
+  width: 34px; height: 34px; border-radius: 50%;
   display:flex; align-items:center; justify-content:center; flex:0 0 auto;
 }
+.icon-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .icon-btn:active { transform: scale(.92); }
 
-/* barra de progresso */
-.progress-wrap { margin-top: 10px; position: relative; z-index: 1; }
-.progress-bar { height: 8px; background: var(--header-track); border-radius: 99px; overflow: hidden; }
-.progress-fill {
-  height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--tenho-bg));
-  border-radius: 99px; transition: width .35s ease;
+.head-big { position: relative; z-index: 1; font-family: var(--font-title); font-weight: 800; font-size: 2.15rem; letter-spacing: -.03em; line-height: .95; color: var(--brand); }
+.head-big small { font-family: var(--font); font-size: .82rem; font-weight: 500; color: var(--text-dim); letter-spacing: 0; }
+.head-row2 { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 9px; }
+.head-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.hchip { font-size: .73rem; font-weight: 600; background: var(--header-ctrl); padding: 4px 10px; border-radius: 99px; color: var(--header-ink); white-space: nowrap; }
+.hchip .d { color: var(--text-dim); } .hchip .d.g { color: var(--tenho-bg); }
+.head-pct { font-size: .72rem; font-weight: 300; letter-spacing: .05em; color: var(--text-dim); flex: none; }
+/* barra fina "quase borda" na base do cabeçalho */
+.head-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--header-track); z-index: 1; }
+.head-bar .progress-fill {
+  display: block; height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--tenho-bg));
+  border-radius: 0 3px 3px 0; transition: width .35s ease;
 }
-.progress-label { font-size: .76rem; margin-top: 5px; opacity: .95; display:flex; justify-content:space-between; font-weight:600; }
 
 /* -------------------- Controles (busca + filtros) -------------------- */
 .controls { padding: 12px 14px 4px; }
-.search {
-  width: 100%; padding: 11px 14px; border-radius: 12px; border: 1px solid var(--border);
-  background: var(--surface); color: var(--text); font-size: 1rem; outline: none; font-family: var(--font);
+.search-wrap { position: relative; }
+.search-ic {
+  position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; stroke: var(--text-dim); fill: none; stroke-width: 1.7;
+  stroke-linecap: round; stroke-linejoin: round; pointer-events: none;
 }
+.search {
+  width: 100%; padding: 10px 14px 10px 40px; border-radius: 12px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text); font-size: .92rem; font-weight: 400; outline: none; font-family: var(--font);
+}
+.search::placeholder { color: var(--text-dim); font-weight: 400; }
 .search:focus { border-color: var(--brand); }
 .filters { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0 2px; scrollbar-width: none; }
 .filters::-webkit-scrollbar { display: none; }
 .chip {
-  flex: 0 0 auto; padding: 7px 13px; border-radius: 99px; border: 1px solid var(--border);
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 13px; border-radius: 99px; border: 1px solid var(--border);
   background: var(--surface); color: var(--text-dim); font-size: .85rem; font-weight: 600; white-space: nowrap;
 }
+.chip svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
 .chip.active { background: var(--brand); color: var(--brand-ink); border-color: var(--brand); }
 
 /* modos (Tenho / Repetida / Várias) */
@@ -193,6 +218,15 @@ main { padding: 6px 14px 20px; max-width: 760px; margin: 0 auto; }
 }
 .acc-head .flag.code3 { font-size: .74rem; }
 .flag.emoji { font-size: 1.4rem; line-height: 1; }
+/* badge de ícone de linha (seções: troféu, copo Coca, estrela Legends) */
+.flag.svgflag {
+  display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto;
+  width: 46px; height: 38px; border-radius: 11px;
+  background: color-mix(in srgb, var(--brand) 12%, var(--surface));
+  color: var(--brand);
+}
+.flag.svgflag svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.lg-head .flag.svgflag { width: 42px; height: 34px; }
 .acc-head .ttl { flex: 1; font-family: var(--font-title); font-weight: 700; font-size: 1.05rem; letter-spacing:-.01em; }
 .acc-head .ttl span { display:block; font-family: var(--font); font-weight:500; font-size:.74rem; color: var(--text-dim); letter-spacing:0; }
 .mini-prog { font-size: .76rem; color: var(--text-dim); font-weight: 700; text-align:right; min-width:46px;}
@@ -250,7 +284,12 @@ html[data-layout="editorial"] .group-label { font-family: var(--font-title); fon
   background: linear-gradient(125deg,transparent 46%, color-mix(in srgb,var(--accent) 70%, #fff) , transparent 54%);
   background-size: 260% 100%; animation: shimmer var(--foil-speed) ease-in-out infinite;
 }
-.cell.foil .num::after { content:" ✨"; font-size:.7rem; }
+/* selo foil discreto: estrelinha de 4 pontas no canto (em vez do emoji ✨) */
+.cell.foil .num::after {
+  content: ""; position: absolute; top: 4px; left: 4px; width: 9px; height: 9px;
+  background: var(--accent);
+  -webkit-mask: var(--star-mask) center/contain no-repeat; mask: var(--star-mask) center/contain no-repeat;
+}
 @keyframes shimmer { 0%{background-position:150% 0} 60%,100%{background-position:-150% 0} }
 
 /* -------------------- Listas (Faltam / Repetidas) -------------------- */

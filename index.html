@@ -19,33 +19,40 @@
   <!-- ===================== CABEÇALHO ===================== -->
   <header>
     <div class="head-bignum" aria-hidden="true">26</div>
-    <div class="head-row">
-      <div class="head-title">Álbum Copa 2026
-        <small id="headSub">Panini · 994 figurinhas</small>
-      </div>
-      <button class="icon-btn" id="btnLayout" title="Trocar layout" aria-label="Trocar layout">🎨</button>
-      <button class="icon-btn" id="btnConfig" title="Ajustes" aria-label="Ajustes">⚙️</button>
+    <div class="head-top">
+      <span class="head-kick">Panini · FIFA World Cup 2026</span>
+      <button class="icon-btn" id="btnLayout" title="Trocar layout" aria-label="Trocar layout">
+        <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1 0 1.6-.8 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.1 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4-4-7.4-9-7.4Z"/><circle cx="7.5" cy="11" r="1.1"/><circle cx="12" cy="7.5" r="1.1"/><circle cx="16.5" cy="11" r="1.1"/></svg>
+      </button>
+      <button class="icon-btn" id="btnConfig" title="Ajustes" aria-label="Ajustes">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1Z"/></svg>
+      </button>
     </div>
-    <div class="progress-wrap">
-      <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
-      <div class="progress-label">
-        <span id="progText">0 / 992</span>
-        <span id="progPct">0%</span>
+    <div class="head-big"><b id="progHave">0</b> <small>de <span id="progTotal">994</span> figurinhas</small></div>
+    <div class="head-row2">
+      <div class="head-chips">
+        <span class="hchip"><span class="d">●</span> <b id="chipMiss">0</b> faltam</span>
+        <span class="hchip"><span class="d g">●</span> <b id="chipRep">0</b> repetidas</span>
       </div>
+      <div class="head-pct" id="progPct">0%</div>
     </div>
+    <div class="head-bar"><i class="progress-fill" id="progFill"></i></div>
   </header>
 
   <!-- ===================== ÁLBUM ===================== -->
   <div class="view active" id="view-album">
     <div class="controls">
-      <input class="search" id="search" type="search" inputmode="search"
-             placeholder="🔎 Buscar nº (ex.: BRA7) ou nome do jogador…" autocomplete="off" />
+      <div class="search-wrap">
+        <svg class="search-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input class="search" id="search" type="search" inputmode="search"
+               placeholder="Buscar nº (ex.: BRA7) ou nome do jogador" autocomplete="off" />
+      </div>
       <div class="filters" id="filters">
-        <button class="chip active" data-f="all">Tudo</button>
-        <button class="chip" data-f="falta">❌ Faltam</button>
-        <button class="chip" data-f="have">✅ Tenho</button>
-        <button class="chip" data-f="dup">🔄 Repetidas</button>
-        <button class="chip" data-f="foil">✨ Foil</button>
+        <button class="chip active" data-f="all"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Tudo</button>
+        <button class="chip" data-f="falta"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>Faltam</button>
+        <button class="chip" data-f="have"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>Tenho</button>
+        <button class="chip" data-f="dup"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L20 7"/><path d="M20 3v4h-4"/><path d="M21 12a9 9 0 0 1-15 6.7L4 17"/><path d="M4 21v-4h4"/></svg>Repetidas</button>
+        <button class="chip" data-f="foil"><svg viewBox="0 0 24 24"><path d="M12 3c.4 3.4 2.6 5.6 6 6-3.4.4-5.6 2.6-6 6-.4-3.4-2.6-5.6-6-6 3.4-.4 5.6-2.6 6-6Z"/></svg>Foil</button>
       </div>
       <div class="markmode" id="markmode">
         <span class="mm-label">Modo:</span>
