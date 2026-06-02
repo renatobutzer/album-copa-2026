@@ -995,7 +995,10 @@
   }
   // aplica em qualquer elemento com data-i="chave" (texto) ou data-iph="chave" (placeholder)
   function applyDataI() {
-    document.querySelectorAll("[data-i]").forEach(function (e) { e.textContent = t(e.getAttribute("data-i")); });
+    document.querySelectorAll("[data-i]").forEach(function (e) {
+      var em = e.getAttribute("data-emoji");
+      e.textContent = (em ? em + " " : "") + t(e.getAttribute("data-i"));
+    });
     document.querySelectorAll("[data-iph]").forEach(function (e) { e.placeholder = t(e.getAttribute("data-iph")); });
   }
   function setText(sel, key) { var e = document.querySelector(sel); if (e) e.textContent = t(key); }
