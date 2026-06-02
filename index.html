@@ -21,6 +21,11 @@
     <div class="head-bignum" aria-hidden="true">26</div>
     <div class="head-top">
       <span class="head-kick">Panini · FIFA World Cup 2026</span>
+      <button class="icon-btn" id="btnLock" title="Travar edição" aria-label="Travar edição">
+        <svg viewBox="0 0 24 24" class="ic-unlocked"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.4-2.1"/></svg>
+        <svg viewBox="0 0 24 24" class="ic-locked"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      </button>
+      <button class="icon-btn" id="btnLang" title="Language" aria-label="Idioma / Language"><span id="langLabel">EN</span></button>
       <button class="icon-btn" id="btnLayout" title="Trocar layout" aria-label="Trocar layout">
         <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1 0 1.6-.8 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.1 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4-4-7.4-9-7.4Z"/><circle cx="7.5" cy="11" r="1.1"/><circle cx="12" cy="7.5" r="1.1"/><circle cx="16.5" cy="11" r="1.1"/></svg>
       </button>
@@ -28,11 +33,11 @@
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1Z"/></svg>
       </button>
     </div>
-    <div class="head-big"><b id="progHave">0</b> <small>de <span id="progTotal">994</span> figurinhas</small></div>
+    <div class="head-big"><b id="progHave">0</b> <small id="progOf"></small></div>
     <div class="head-row2">
       <div class="head-chips">
-        <span class="hchip"><span class="d">●</span> <b id="chipMiss">0</b> faltam</span>
-        <span class="hchip"><span class="d g">●</span> <b id="chipRep">0</b> repetidas</span>
+        <span class="hchip"><span class="d">●</span> <b id="chipMiss">0</b> <span id="chipMissL"></span></span>
+        <span class="hchip"><span class="d g">●</span> <b id="chipRep">0</b> <span id="chipRepL"></span></span>
       </div>
       <div class="head-pct" id="progPct">0%</div>
     </div>
@@ -87,31 +92,31 @@
   <div class="view" id="view-share">
     <main>
       <div class="stat-row">
-        <div class="stat g"><div class="v" id="stHave">0</div><div class="l">Tenho</div></div>
-        <div class="stat r"><div class="v" id="stRep">0</div><div class="l">Repetidas</div></div>
-        <div class="stat"><div class="v" id="stMiss">0</div><div class="l">Faltam</div></div>
+        <div class="stat g"><div class="v" id="stHave">0</div><div class="l" data-i="stat_have">Tenho</div></div>
+        <div class="stat r"><div class="v" id="stRep">0</div><div class="l" data-i="stat_swaps">Repetidas</div></div>
+        <div class="stat"><div class="v" id="stMiss">0</div><div class="l" data-i="stat_missing">Faltam</div></div>
       </div>
 
       <div class="card">
-        <h2>🔄 Lista para troca</h2>
-        <p>Gera um texto pronto para colar no grupo do WhatsApp com suas repetidas e o que falta.</p>
-        <button class="action-btn" id="btnWhats">📲 Copiar p/ WhatsApp</button>
-        <button class="action-btn sec" id="btnShareApi" style="display:none">📤 Compartilhar…</button>
+        <h2 data-i="card_list_title">🔄 Lista para troca</h2>
+        <p data-i="card_list_desc">Gera um texto pronto para colar no grupo do WhatsApp com suas repetidas e o que falta.</p>
+        <button class="action-btn" id="btnWhats" data-i="btn_whats">📲 Copiar p/ WhatsApp</button>
+        <button class="action-btn sec" id="btnShareApi" data-i="btn_share_api" style="display:none">📤 Compartilhar…</button>
         <textarea class="preview" id="sharePreview" readonly></textarea>
-        <button class="action-btn sec" id="btnCopyRep">Copiar só repetidas</button>
-        <button class="action-btn sec" id="btnCopyMiss">Copiar só faltantes</button>
+        <button class="action-btn sec" id="btnCopyRep" data-i="btn_copy_swaps">Copiar só repetidas</button>
+        <button class="action-btn sec" id="btnCopyMiss" data-i="btn_copy_missing">Copiar só faltantes</button>
       </div>
 
       <div class="card">
-        <h2>🔗 Link da minha coleção</h2>
-        <p>Manda pro amigo. Ao abrir, ele vê suas repetidas e faltantes — e o app dele já mostra o que combina pra trocar.</p>
-        <input type="text" id="shareName" class="search" placeholder="Seu nome (opcional)" style="margin-bottom:10px" autocomplete="off" />
-        <button class="action-btn" id="btnGenLink">🔗 Gerar link de troca</button>
+        <h2 data-i="card_link_title">🔗 Link da minha coleção</h2>
+        <p data-i="card_link_desc">Manda pro amigo. Ao abrir, ele vê suas repetidas e faltantes — e o app dele já mostra o que combina pra trocar.</p>
+        <input type="text" id="shareName" class="search" data-iph="share_name_ph" placeholder="Seu nome (opcional)" style="margin-bottom:10px" autocomplete="off" />
+        <button class="action-btn" id="btnGenLink" data-i="btn_gen_link">🔗 Gerar link de troca</button>
         <div id="shareLinkBox" style="display:none">
           <textarea class="preview" id="shareLinkOut" readonly></textarea>
-          <button class="action-btn" id="btnCopyLink">📋 Copiar link</button>
-          <button class="action-btn sec" id="btnWhatsLink">📲 Mandar no WhatsApp</button>
-          <button class="action-btn sec" id="btnQR">🔳 Mostrar / ocultar QR</button>
+          <button class="action-btn" id="btnCopyLink" data-i="btn_copy_link">📋 Copiar link</button>
+          <button class="action-btn sec" id="btnWhatsLink" data-i="btn_whats_link">📲 Mandar no WhatsApp</button>
+          <button class="action-btn sec" id="btnQR" data-i="btn_qr">🔳 Mostrar / ocultar QR</button>
           <div id="qrBox" class="qrbox" style="display:none"></div>
         </div>
       </div>
@@ -122,43 +127,49 @@
   <div class="view" id="view-config">
     <main>
       <div class="card">
-        <h2>💾 Backup (salvar / restaurar)</h2>
-        <p>Tudo fica salvo neste aparelho. Exporte um arquivo para guardar ou levar para outro celular/PC.</p>
-        <button class="action-btn" id="btnExport">⬇️ Exportar meu progresso</button>
-        <button class="action-btn sec" id="btnImport">⬆️ Importar de um arquivo</button>
+        <h2 data-i="cfg_backup_t">💾 Backup (salvar / restaurar)</h2>
+        <p data-i="cfg_backup_d">Tudo fica salvo neste aparelho. Exporte um arquivo para guardar ou levar para outro celular/PC.</p>
+        <button class="action-btn" id="btnExport" data-i="btn_export">⬇️ Exportar meu progresso</button>
+        <button class="action-btn sec" id="btnImport" data-i="btn_import">⬆️ Importar de um arquivo</button>
         <input type="file" id="fileImport" accept="application/json,.json" style="display:none" />
-        <div class="note">📱 <b>No iPhone:</b> abra o app pelo atalho na <b>Tela de Início</b> (no Safari: <b>Compartilhar → Adicionar à Tela de Início</b>). Sem isso, o Safari pode apagar seu progresso após ~7 dias sem uso. Vale também <b>exportar um backup</b> de vez em quando.</div>
+        <div class="note" data-i="note_iphone">📱 No iPhone: abra o app pelo atalho na Tela de Início…</div>
       </div>
       <div class="card">
-        <h2>🎨 Aparência</h2>
-        <label for="themeSelect" style="display:block;font-size:.85rem;color:var(--text-dim);margin-bottom:8px">Layout do app (muda na hora):</label>
+        <h2 data-i="cfg_appearance">🎨 Aparência</h2>
+        <label for="themeSelect" data-i="cfg_layout_label" style="display:block;font-size:.85rem;color:var(--text-dim);margin-bottom:8px">Layout do app (muda na hora):</label>
         <div class="select-wrap">
-          <select id="themeSelect" class="theme-select" aria-label="Escolher layout" autocomplete="off">
-            <option value="figurinha">🃏 Figurinha (estilo álbum)</option>
-            <option value="noturno">🌙 Noturno (escuro)</option>
-            <option value="vibrante">🟢 Vibrante (colorido)</option>
-            <option value="editorial">📰 Editorial (revista)</option>
+          <select id="themeSelect" class="theme-select" aria-label="Layout" autocomplete="off">
+            <option value="figurinha">🃏 Figurinha</option>
+            <option value="noturno">🌙 Noturno</option>
+            <option value="vibrante">🟢 Vibrante</option>
+            <option value="editorial">📰 Editorial</option>
           </select>
         </div>
-        <div class="note">Atalho: o botão <b>🎨</b> no topo troca o layout rapidinho.</div>
+        <label for="langSelect" data-i="cfg_lang_label" style="display:block;font-size:.85rem;color:var(--text-dim);margin:12px 0 8px">Idioma / Language:</label>
+        <div class="select-wrap">
+          <select id="langSelect" class="theme-select" aria-label="Language" autocomplete="off">
+            <option value="pt">🇧🇷 Português</option>
+            <option value="en">🇬🇧 English</option>
+          </select>
+        </div>
+        <div class="note" data-i="cfg_layout_note">Atalho: o botão 🎨 no topo troca o layout rapidinho.</div>
       </div>
       <div class="card">
-        <h2>🔄 Atualização</h2>
-        <p>Pega a versão mais nova publicada. Seu progresso (figurinhas marcadas) é mantido.</p>
-        <button class="action-btn" id="btnForceUpdate">⤓ Buscar atualização agora</button>
-        <div class="note">Use se publicou uma versão nova e não viu mudança (ou se o aviso não apareceu). O app recarrega só uma vez.</div>
+        <h2 data-i="cfg_update_t">🔄 Atualização</h2>
+        <p data-i="cfg_update_d">Pega a versão mais nova publicada. Seu progresso (figurinhas marcadas) é mantido.</p>
+        <button class="action-btn" id="btnForceUpdate" data-i="btn_force_update">⤓ Buscar atualização agora</button>
+        <div class="note" data-i="cfg_update_note">Use se publicou uma versão nova e não viu mudança (ou se o aviso não apareceu). O app recarrega só uma vez.</div>
       </div>
       <div class="card">
-        <h2>♻️ Recomeçar</h2>
-        <p>Apaga TODAS as marcações deste álbum (não dá para desfazer).</p>
-        <button class="action-btn danger" id="btnReset">Zerar tudo</button>
+        <h2 data-i="cfg_reset_t">♻️ Recomeçar</h2>
+        <p data-i="cfg_reset_d">Apaga TODAS as marcações deste álbum (não dá para desfazer).</p>
+        <button class="action-btn danger" id="btnReset" data-i="btn_reset">Zerar tudo</button>
       </div>
       <div class="card">
-        <h2>ℹ️ Sobre</h2>
-        <p style="margin:0">Álbum FIFA World Cup 2026 (Panini): 980 figurinhas + 14 do insert Coca-Cola (CC1–CC14, edição Brasil) = 994.
-        Checklist coletada em 31/05/2026 — os nomes dos jogadores podem mudar nas convocações finais; segure uma figurinha para corrigir.</p>
+        <h2 data-i="cfg_about_t">ℹ️ Sobre</h2>
+        <p style="margin:0" data-i="cfg_about_d">Álbum FIFA World Cup 2026 (Panini): 980 figurinhas + 14 do insert Coca-Cola (CC1–CC14, edição Brasil) = 994.</p>
       </div>
-      <p class="foot-note">Feito para uso pessoal · imagens/nomes pertencem aos seus detentores.</p>
+      <p class="foot-note" data-i="foot_note">Feito para uso pessoal · imagens/nomes pertencem aos seus detentores.</p>
     </main>
   </div>
 
@@ -170,8 +181,8 @@
         <div class="friend-sub" id="friendSub"></div>
       </div>
       <div id="friendBody"></div>
-      <button class="action-btn" id="btnExitFriend">📖 Ver / usar o meu álbum</button>
-      <p class="foot-note">Você está vendo a lista de outra pessoa — sua coleção não foi alterada.</p>
+      <button class="action-btn" id="btnExitFriend" data-i="friend_exit">📖 Ver / usar o meu álbum</button>
+      <p class="foot-note" data-i="friend_foot">Você está vendo a lista de outra pessoa — sua coleção não foi alterada.</p>
     </main>
   </div>
 
@@ -183,15 +194,15 @@
       <div class="s-sub" id="shSub"></div>
       <div class="s-foil" id="shFoil" style="display:none">✨ Figurinha foil (brilhante) — mais rara</div>
 
-      <label for="shName">Nome / descrição</label>
-      <input type="text" id="shName" placeholder="Ex.: nome do jogador" />
+      <label for="shName" data-i="sheet_name_label">Nome / descrição</label>
+      <input type="text" id="shName" />
 
       <div class="toggle-row">
         <button class="big-btn" id="shHave">Marcar que tenho</button>
       </div>
 
       <div class="stepper">
-        <span class="lab">🔄 Repetidas</span>
+        <span class="lab" data-i="sheet_swaps">🔄 Repetidas</span>
         <div class="ctrls">
           <button class="step-btn" id="shMinus">−</button>
           <span class="step-val" id="shDup">0</span>
@@ -199,7 +210,7 @@
         </div>
       </div>
 
-      <button class="action-btn" id="shClose" style="margin-top:18px">Fechar</button>
+      <button class="action-btn" id="shClose" style="margin-top:18px" data-i="sheet_close">Fechar</button>
     </div>
   </div>
 
@@ -215,25 +226,26 @@
 
   <!-- aviso de nova versão (aparece após publicar um update) -->
   <div class="update-bar" id="updateBar">
-    <span>✨ Nova versão disponível</span>
-    <button id="btnUpdate">Atualizar</button>
+    <span data-i="update_avail">✨ Nova versão disponível</span>
+    <button id="btnUpdate" data-i="btn_update">Atualizar</button>
   </div>
 
   <!-- menu rápido de layout (botão 🎨) -->
   <div class="lay-sheet" id="laySheet">
     <div class="bd"></div>
     <div class="lay-card">
-      <h4>Escolha o layout</h4>
-      <button class="lay-opt" data-lay="figurinha"><span class="em">🃏</span><span class="tx"><b>Figurinha</b><span>Estilo álbum (principal)</span></span><span class="chk">✓</span></button>
-      <button class="lay-opt" data-lay="noturno"><span class="em">🌙</span><span class="tx"><b>Noturno</b><span>Escuro premium</span></span><span class="chk">✓</span></button>
-      <button class="lay-opt" data-lay="vibrante"><span class="em">🟢</span><span class="tx"><b>Vibrante</b><span>Material, colorido</span></span><span class="chk">✓</span></button>
-      <button class="lay-opt" data-lay="editorial"><span class="em">📰</span><span class="tx"><b>Editorial</b><span>Revista premium</span></span><span class="chk">✓</span></button>
+      <h4 data-i="lay_choose">Escolha o layout</h4>
+      <button class="lay-opt" data-lay="figurinha"><span class="em">🃏</span><span class="tx"><b data-i="lay_figurinha">Figurinha</b><span data-i="lay_figurinha_d">Estilo álbum (principal)</span></span><span class="chk">✓</span></button>
+      <button class="lay-opt" data-lay="noturno"><span class="em">🌙</span><span class="tx"><b data-i="lay_noturno">Noturno</b><span data-i="lay_noturno_d">Escuro premium</span></span><span class="chk">✓</span></button>
+      <button class="lay-opt" data-lay="vibrante"><span class="em">🟢</span><span class="tx"><b data-i="lay_vibrante">Vibrante</b><span data-i="lay_vibrante_d">Material, colorido</span></span><span class="chk">✓</span></button>
+      <button class="lay-opt" data-lay="editorial"><span class="em">📰</span><span class="tx"><b data-i="lay_editorial">Editorial</b><span data-i="lay_editorial_d">Revista premium</span></span><span class="chk">✓</span></button>
     </div>
   </div>
 
   <script src="vendor/lz-string.min.js"></script>
   <script src="vendor/qrcode.min.js"></script>
   <script src="data/album.js"></script>
+  <script src="data/i18n.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

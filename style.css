@@ -119,6 +119,15 @@ html[data-layout="editorial"] .head-kick { letter-spacing: .14em; }
 }
 .icon-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .icon-btn:active { transform: scale(.92); }
+#btnLang { font-weight: 800; font-size: .8rem; letter-spacing: .04em; }
+/* cadeado: mostra ícone aberto OU fechado conforme estado */
+#btnLock .ic-locked { display: none; }
+#btnLock.on .ic-unlocked { display: none; }
+#btnLock.on .ic-locked { display: block; }
+#btnLock.on { background: color-mix(in srgb, var(--accent) 30%, var(--header-ctrl)); color: var(--accent); }
+/* travado: oculta os controles de edição (o clique na cell é tratado no JS, que avisa) */
+body.locked .plus, body.locked .markall { display: none; }
+body.locked .mm-seg { opacity: .5; pointer-events: none; }   /* modos desativados */
 
 .head-big { position: relative; z-index: 1; font-family: var(--font-title); font-weight: 800; font-size: 2.15rem; letter-spacing: -.03em; line-height: .95; color: var(--brand); }
 .head-big small { font-family: var(--font); font-size: .82rem; font-weight: 500; color: var(--text-dim); letter-spacing: 0; }
