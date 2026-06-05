@@ -189,6 +189,19 @@ window.I18N = {
     t_locked:         "🔒 Edição travada — toque pra navegar sem alterar",
     t_unlocked:       "🔓 Edição liberada",
 
+    /* ---- Aba Jogos ---- */
+    tab_jogos:        "Jogos",
+    jg_title:         "Jogos",
+    jg_groups:        "Grupos",
+    jg_bracket:       "Chave",
+    jg_bydate:        "Por data",
+    jg_group_games:   "Jogos do grupo",
+    jg_p:"J", jg_w:"V", jg_d:"E", jg_l:"D", jg_gd:"SG", jg_pts:"Pts",
+    jg_qual_note:     "🟢 1º e 2º avançam · os 8 melhores 3º também se classificam",
+    jg_bracket_note:  "A chave se preenche conforme você digita os placares. Empate exige um vencedor (pênaltis) para avançar.",
+    jg_first:"1º", jg_second:"2º", jg_third:"3º", jg_winner:"Venc.", jg_loser:"Perd.",
+    ko_r32:"32-avos", ko_r16:"Oitavas", ko_qf:"Quartas", ko_sf:"Semis", ko_third:"3º lugar", ko_final:"Final",
+
     /* ---- Toasts / confirmações ---- */
     t_saved_err:      "Erro ao salvar 😕",
     t_list_copied:    "Lista copiada! Cole no WhatsApp 📲",
@@ -373,6 +386,19 @@ window.I18N = {
     lock_on:          "Unlock editing",
     t_locked:         "🔒 Editing locked — tap to browse without changing",
     t_unlocked:       "🔓 Editing unlocked",
+
+    /* ---- Matches tab ---- */
+    tab_jogos:        "Matches",
+    jg_title:         "Matches",
+    jg_groups:        "Groups",
+    jg_bracket:       "Bracket",
+    jg_bydate:        "By date",
+    jg_group_games:   "Group matches",
+    jg_p:"P", jg_w:"W", jg_d:"D", jg_l:"L", jg_gd:"GD", jg_pts:"Pts",
+    jg_qual_note:     "🟢 Top 2 advance · the 8 best 3rd-place teams also qualify",
+    jg_bracket_note:  "The bracket fills in as you enter scores. A draw needs a winner (penalties) to advance.",
+    jg_first:"1st", jg_second:"2nd", jg_third:"3rd", jg_winner:"Winner", jg_loser:"Loser",
+    ko_r32:"Round of 32", ko_r16:"Round of 16", ko_qf:"Quarters", ko_sf:"Semis", ko_third:"3rd place", ko_final:"Final",
 
     /* ---- Toasts / confirms ---- */
     t_saved_err:      "Couldn't save 😕",

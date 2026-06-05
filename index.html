@@ -186,6 +186,11 @@
     </main>
   </div>
 
+  <!-- ===================== JOGOS (grupos + chave) ===================== -->
+  <div class="view" id="view-jogos">
+    <main id="jogosBody"></main>
+  </div>
+
   <!-- ===================== SHEET (detalhe) ===================== -->
   <div class="backdrop" id="backdrop">
     <div class="sheet" id="sheet">
@@ -220,6 +225,7 @@
     <button class="tab" data-v="faltam"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></span>Faltam</button>
     <button class="tab" data-v="rep"><span class="ic"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15-6.7L20 7"/><path d="M20 3v4h-4"/><path d="M21 12a9 9 0 0 1-15 6.7L4 17"/><path d="M4 21v-4h4"/></svg></span>Repetidas</button>
     <button class="tab" data-v="share"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></svg></span>Trocar</button>
+    <button class="tab" data-v="jogos"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18M3.5 9h17M3.5 15h17M12 3c3 2.5 3 16 0 18M12 3c-3 2.5-3 16 0 18"/></svg></span>Jogos</button>
   </nav>
 
   <div class="toast" id="toast"></div>
@@ -245,7 +251,9 @@
   <script src="vendor/lz-string.min.js"></script>
   <script src="vendor/qrcode.min.js"></script>
   <script src="data/album.js"></script>
+  <script src="data/jogos.js"></script>
   <script src="data/i18n.js"></script>
+  <script src="jogos-app.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

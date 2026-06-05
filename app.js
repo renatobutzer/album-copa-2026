@@ -11,7 +11,7 @@
   var A = window.ALBUM;
 
   // ----------------------------- Estado ------------------------------------
-  var state = { owned: {}, names: {}, legends: {}, layout: "figurinha", shareName: "", lang: null, locked: false };
+  var state = { owned: {}, names: {}, legends: {}, scores: {}, layout: "figurinha", shareName: "", lang: null, locked: false };
 
   // ----- i18n -----
   var L = (window.I18N && window.I18N.pt) || {};   // dicionário ativo (default pt)
@@ -33,6 +33,7 @@
         state.owned = p.owned || {};
         state.names = p.names || {};
         state.legends = p.legends || {};
+        state.scores = p.scores || {};
         // migração: temas antigos -> novos layouts
         state.layout = p.layout || mapOldTheme(p.theme) || "figurinha";
         state.shareName = p.shareName || "";
@@ -618,15 +619,20 @@
     else if (current === "faltam") renderFaltam();
     else if (current === "rep") renderRep();
     else if (current === "share") renderShare();
+    else if (current === "jogos") renderJogos();
+  }
+  function renderJogos() {
+    if (window.JogosModule) JogosModule.render(document.getElementById("jogosBody"));
   }
   function showView(v) {
     current = v;
-    var map = { album: "view-album", faltam: "view-faltam", rep: "view-rep", share: "view-share", config: "view-config", friend: "view-friend" };
+    var map = { album: "view-album", faltam: "view-faltam", rep: "view-rep", share: "view-share",
+                config: "view-config", friend: "view-friend", jogos: "view-jogos" };
     Object.keys(map).forEach(function (k) {
       document.getElementById(map[k]).classList.toggle("active", k === v);
     });
-    document.querySelectorAll(".tab").forEach(function (t) {
-      t.classList.toggle("active", t.getAttribute("data-v") === v);
+    document.querySelectorAll(".tab").forEach(function (tb) {
+      tb.classList.toggle("active", tb.getAttribute("data-v") === v);
     });
     renderActive();
     window.scrollTo(0, 0);
@@ -876,6 +882,18 @@
     // Cadeado — botão 🔒
     document.getElementById("btnLock").addEventListener("click", toggleLock);
 
+    // Aba Jogos — navegação (grupos/chave/chips) + placares
+    var jb = document.getElementById("jogosBody");
+    jb.addEventListener("click", function (e) {
+      if (window.JogosModule) JogosModule.handleClick(e, renderJogos);
+    });
+    jb.addEventListener("input", function (e) {
+      if (window.JogosModule) JogosModule.handleScoreInput(e, renderJogos);
+    });
+    jb.addEventListener("change", function (e) {
+      if (window.JogosModule) JogosModule.handleScoreInput(e, renderJogos);
+    });
+
     // Layout — dropdown nos Ajustes
     document.getElementById("themeSelect").addEventListener("change", function (e) {
       setLayout(e.target.value);
@@ -982,7 +1000,7 @@
       var k = mm[b.getAttribute("data-mode")]; if (k) b.textContent = t(k);
     });
     // abas
-    var tabs = { album: "tab_album", faltam: "tab_missing", rep: "tab_swaps", share: "tab_trade" };
+    var tabs = { album: "tab_album", faltam: "tab_missing", rep: "tab_swaps", share: "tab_trade", jogos: "tab_jogos" };
     document.querySelectorAll("#tabbar .tab").forEach(function (tb) {
       var k = tabs[tb.getAttribute("data-v")]; if (!k) return;
       var ic = tb.querySelector(".ic"); tb.textContent = ""; if (ic) tb.appendChild(ic);
@@ -1026,7 +1044,7 @@
   // =========================================================================
   function exportData() {
     var data = { app: "figurinhas2026", version: 1, exportedAt: new Date().toISOString(),
-                 owned: state.owned, names: state.names, legends: state.legends };
+                 owned: state.owned, names: state.names, legends: state.legends, scores: state.scores };
     var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
@@ -1048,6 +1066,7 @@
         state.owned = d.owned || {};
         state.names = d.names || {};
         state.legends = d.legends || {};
+        state.scores = d.scores || {};
         save(); afterChange(); toast(t("t_imported"));
       } catch (err) { toast(t("t_file_invalid")); }
     };
@@ -1122,11 +1141,31 @@
   // =========================================================================
   //  INICIALIZAÇÃO
   // =========================================================================
+  function initJogos() {
+    if (!window.JogosModule || !window.JOGOS) return;
+    JogosModule.init({
+      t: t,
+      teamName: function (code) {
+        // nome traduzido da seleção (usa o do álbum)
+        var s = A.byCode[code + "1"]; return s ? s.teamName : code;
+      },
+      teamColor: function (code) { return teamColor(code); },
+      getScores: function () { return state.scores; },
+      setScore: function (n, h, a) {
+        if (h == null && a == null) delete state.scores[n];
+        else state.scores[n] = [h, a];
+        save();
+      },
+      get locked() { return state.locked; }
+    });
+  }
+
   function init() {
     load();
     applyLayout();
     applyLang();    // define o dicionário e reescreve os textos estáticos
     applyLock();
+    initJogos();
     bind();
     refreshChrome();
     showView("album");
