@@ -384,36 +384,42 @@
   // =========================================================================
   //  RENDER — TROCAR / COMPARTILHAR
   // =========================================================================
-  function buildRepText() {
-    var parts = [];
-    ALL.forEach(function (s) {
-      var d = dupes(s.code);
-      if (d > 0) parts.push(s.code + (d > 1 ? "(" + d + "x)" : ""));
+  // Monta a lista agrupada por seleção. Ex.:  "BRA 🇧🇷: 7, 12"
+  // predicate(s) decide se a figurinha entra; withCount mostra "(2x)" em repetidas.
+  function buildListByTeam(predicate, withCount) {
+    var lines = [];
+    function emit(label, stickers) {
+      var nums = [];
+      stickers.forEach(function (s) {
+        if (!predicate(s)) return;
+        if (withCount) { var d = dupes(s.code); nums.push(s.pos + (d > 1 ? "(" + d + "x)" : "")); }
+        else nums.push(s.pos);
+      });
+      if (nums.length) lines.push(label + ": " + nums.join(", "));
+    }
+    emit(t("sec_opening") + " 🏆", A.abertura.stickers);
+    A.grupos.forEach(function (g) {
+      g.teams.forEach(function (tm) { emit(tm.code + " " + tm.flag, tm.stickers); });
     });
-    return parts.join(", ");
+    emit(t("sec_coke") + " 🥤", A.coke.stickers);
+    return lines.join("\n");
   }
-  function buildMissText() {
-    var parts = [];
-    ALL.forEach(function (s) {
-      if (!have(s.code)) parts.push(s.code + (s.foil ? "✨" : ""));
-    });
-    return parts.join(", ");
-  }
+  function buildMissText() { return buildListByTeam(function (s) { return !have(s.code); }, false); }
+  function buildRepText()  { return buildListByTeam(function (s) { return dupes(s.code) > 0; }, true); }
+
   function buildFullText() {
     var st = stats();
-    var rep = buildRepText();
     var miss = buildMissText();
+    var rep = buildRepText();
     var out = [];
     out.push(t("txt_title"));
     out.push(t("txt_have", { n: st.have, total: st.total, pct: pct(st.have, st.total) }));
     out.push("");
-    out.push(t("txt_swaps", { n: st.rep }));
-    out.push(rep || "—");
-    out.push("");
-    out.push(t("txt_missing", { n: st.miss }));
+    out.push(t("txt_missing", { n: st.miss }));          // FALTANTES primeiro
     out.push(miss || t("txt_done"));
     out.push("");
-    out.push(t("txt_foil_note"));
+    out.push(t("txt_swaps", { n: st.rep }));             // depois as repetidas
+    out.push(rep || "—");
     return out.join("\n");
   }
 
