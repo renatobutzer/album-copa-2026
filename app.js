@@ -364,6 +364,9 @@
     var groups = groupByTeam(function (s) { return dupes(s.code) > 0; });
     var st = stats();
     document.getElementById("repHead").innerHTML = t("swaps_head", { n: "<b>" + st.rep + "</b>" });
+    // Botão "zerar repetidas": só aparece quando há repetidas e a edição não está travada
+    var btnClear = document.getElementById("btnClearRep");
+    if (btnClear) btnClear.style.display = (st.rep > 0 && !state.locked) ? "block" : "none";
     var el = document.getElementById("repList");
     if (!groups.length) {
       el.innerHTML = '<div class="empty"><div class="big">🔄</div>' + esc(t("swaps_empty")).replace(/\n/g, "<br>") + '</div>';
@@ -591,6 +594,19 @@
     afterChange();
   }
 
+  // "Zerar repetidas": remove só as cópias EXTRAS (count>=2 -> 1). A figurinha
+  // que o usuário tem continua marcada. Pede CONFIRMAÇÃO (ação destrutiva).
+  function clearAllSwaps() {
+    if (state.locked) { toast(t("t_locked")); return; }   // travado: não altera
+    if (stats().rep <= 0) return;                          // nada para zerar
+    if (!confirm(t("confirm_clear_swaps"))) return;
+    ALL.forEach(function (s) {
+      if (count(s.code) >= 2) setCount(s.code, 1);         // mantém 1, zera as extras
+    });
+    afterChange();
+    toast(t("t_swaps_cleared"));
+  }
+
   function afterChange() {
     refreshChrome();
     renderActive();
@@ -780,6 +796,9 @@
         if (pill) openSheet(pill.getAttribute("data-code"));
       });
     });
+
+    // Botão "zerar todas as repetidas" (na aba Repetidas)
+    document.getElementById("btnClearRep").addEventListener("click", clearAllSwaps);
 
     // Filtros
     document.getElementById("filters").addEventListener("click", function (e) {
@@ -1042,6 +1061,7 @@
   }
   function toggleLock() {
     state.locked = !state.locked; save(); applyLock();
+    renderActive();   // atualiza ex.: botão "zerar repetidas" some quando trava
     toast(state.locked ? t("t_locked") : t("t_unlocked"));
   }
 

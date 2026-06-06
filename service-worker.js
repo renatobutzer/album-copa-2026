@@ -1,7 +1,7 @@
 /* Service worker — deixa o app funcionar offline.
    Estratégia: cache-first para a "casca" do app; atualiza em segundo plano.
    Ao publicar uma nova versão, troque CACHE_VERSION para forçar atualização. */
-var CACHE_VERSION = "copa2026-v24";
+var CACHE_VERSION = "copa2026-v25";
 /* assets agrupados: HTML/CSS/JS são a "casca" e devem ser coerentes entre si.
    Versionar com ?v= força o navegador a baixar a cópia certa (evita CSS/JS mistos). */
 var ASSETS = [

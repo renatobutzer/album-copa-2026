@@ -109,6 +109,9 @@ window.I18N = {
     swaps_head:       "Você tem {n} figurinha(s) repetida(s) para trocar.",
     swaps_empty:      "Nenhuma repetida ainda.\nToque no + de uma figurinha que você tem em dobro.",
     swaps_group:      "{n} p/ trocar",
+    btn_clear_swaps:  "🗑️ Zerar todas as repetidas",
+    confirm_clear_swaps: "Tem certeza que deseja zerar TODAS as repetidas?\n\nAs figurinhas que você tem continuam marcadas — só as cópias extras serão removidas. Não dá para desfazer.",
+    t_swaps_cleared:  "Repetidas zeradas.",
 
     /* ---- Tela Trocar ---- */
     stat_have:        "Tenho",
@@ -307,6 +310,9 @@ window.I18N = {
     swaps_head:       "You have {n} swap(s) ready to trade.",
     swaps_empty:      "No swaps yet.\nTap the + on a sticker you have more than one of.",
     swaps_group:      "{n} to swap",
+    btn_clear_swaps:  "🗑️ Clear all swaps",
+    confirm_clear_swaps: "Are you sure you want to clear ALL swaps?\n\nThe stickers you own stay marked — only the extra copies are removed. This can't be undone.",
+    t_swaps_cleared:  "Swaps cleared.",
 
     /* ---- Swap screen ---- */
     stat_have:        "Got",
