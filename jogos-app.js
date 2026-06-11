@@ -95,16 +95,40 @@ window.JogosModule = (function () {
     return rows;
   }
 
+  // ---------- alocação dos 8 melhores 3ºs nos slots "3*" do R32 ----------
+  // Cada slot só aceita 3ºs de certos grupos (lista `thirds` do jogo) e cada 3º
+  // ocupa UM slot. Resolvemos por backtracking, tentando o melhor ranqueado
+  // primeiro (determinístico). A FIFA usa a tabela fixa do Anexo C — esta
+  // alocação respeita as mesmas restrições, mas pode divergir em alguns cenários.
+  function assignThirds() {
+    if (!allGroupsComplete()) return null;       // só com os 12 grupos completos
+    var best = thirdsRanking(); if (best.length < 8) return null;
+    var codeByGroup = {};
+    best.forEach(function (r) { codeByGroup[r.group] = r.code; });
+    var rank = best.map(function (r) { return r.group; });
+    var slots = J.ko.filter(function (g) { return g.homeSlot === "3*" || g.awaySlot === "3*"; });
+    var used = {}, out = {};
+    function fit(i) {
+      if (i === slots.length) return true;
+      var elig = (slots[i].thirds || []).filter(function (gr) { return codeByGroup[gr] && !used[gr]; });
+      elig.sort(function (a, b) { return rank.indexOf(a) - rank.indexOf(b); });
+      for (var k = 0; k < elig.length; k++) {
+        used[elig[k]] = true; out[slots[i].n] = codeByGroup[elig[k]];
+        if (fit(i + 1)) return true;
+        delete used[elig[k]]; delete out[slots[i].n];
+      }
+      return false;
+    }
+    return fit(0) ? out : null;
+  }
+
   // ---------- resolve um "slot" do mata-mata para um código de time ----------
-  // "1A"->1º do A; "2B"->2º; "3*"(+thirds)->terceiro elegível; "W73"->venc. jogo 73; "L101"->perd.
-  function resolveSlot(slot, thirdsList) {
+  // "1A"->1º do A; "2B"->2º; "3*"->3º alocado (assignThirds); "W73"->venc. jogo 73; "L101"->perd.
+  function resolveSlot(slot, game) {
     if (!slot) return null;
     if (slot === "3*") {
-      // só dá pra resolver quando todos os 12 grupos terminaram E sabemos os 8 melhores
-      var best = thirdsRanking(); if (best.length < 8) return null;
-      // alocação simplificada: associa os terceiros elegíveis deste slot na ordem do ranking
-      // (a FIFA usa o Anexo C; aqui usamos uma heurística estável p/ preview)
-      return null; // preenchido pelo assignThirds (abaixo) — slot fica "?" até lá
+      var asg = assignThirds();          // null até os 12 grupos terminarem
+      return asg ? (asg[game.n] || null) : null;
     }
     var m = slot.match(/^([12])([A-L])$/);
     if (m) {
@@ -128,8 +152,8 @@ window.JogosModule = (function () {
     if (!home || !away) return null;
     return s[0] > s[1] ? { win: home, lose: away } : { win: away, lose: home };
   }
-  function koHomeCode(g) { return resolveSlot(g.homeSlot, g.thirds); }
-  function koAwayCode(g) { return resolveSlot(g.awaySlot, g.thirds); }
+  function koHomeCode(g) { return resolveSlot(g.homeSlot, g); }
+  function koAwayCode(g) { return resolveSlot(g.awaySlot, g); }
 
   // ---------- RENDER ----------
   function render(el) {
