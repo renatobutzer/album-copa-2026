@@ -81,6 +81,19 @@ window.JogosModule = (function () {
     });
     return rows.slice(0, 8); // os 8 melhores (só quando os 12 grupos terminaram)
   }
+  // classificação COMPLETA dos 3ºs (12 grupos, parciais incluídos) — p/ a "Lista dos 3ºs"
+  function thirdsAll() {
+    var rows = "ABCDEFGHIJKL".split("").map(function (gr) {
+      var r = tableOf(gr)[2];
+      r.group = gr;
+      return r;
+    });
+    rows.sort(function (x, y) {
+      return (y.pts - x.pts) || (y.sg - x.sg) || (y.gp - x.gp) ||
+             ctx.teamName(x.code).localeCompare(ctx.teamName(y.code));
+    });
+    return rows;
+  }
 
   // ---------- resolve um "slot" do mata-mata para um código de time ----------
   // "1A"->1º do A; "2B"->2º; "3*"(+thirds)->terceiro elegível; "W73"->venc. jogo 73; "L101"->perd.
@@ -134,8 +147,10 @@ window.JogosModule = (function () {
       chips += '<button class="jg-chip' + (groupSel===gr?" on":"") + '" data-jgroup="' + gr + '">' + gr + '</button>';
     });
     chips += '<button class="jg-chip date' + (groupSel==="date"?" on":"") + '" data-jgroup="date">📅 ' + t("jg_bydate") + '</button>';
+    chips += '<button class="jg-chip thirds' + (groupSel==="thirds"?" on":"") + '" data-jgroup="thirds">🥉 ' + t("jg_thirds") + '</button>';
     chips += '</div>';
     if (groupSel === "date") return chips + renderByDate(J.groupGames);
+    if (groupSel === "thirds") return chips + renderThirds();
     // tabela + jogos do grupo
     return chips + tableHTML(groupSel) + matchesHTML(
       J.groupGames.filter(function (g){ return g.group===groupSel; }), false);
@@ -189,6 +204,30 @@ window.JogosModule = (function () {
       if (g.date !== lastDate) { lastDate = g.date; h += '<div class="jg-sech">' + fmtDateLong(g.date) + '</div>'; }
       h += matchCard(g, true);
     });
+    return h;
+  }
+
+  // "Lista dos 3ºs": os 12 terceiros ranqueados (Pts → SG → GP); 8 primeiros em âmbar.
+  // ✓ só aparece quando os 12 grupos terminaram (aí a lista é definitiva).
+  function renderThirds() {
+    var rows = thirdsAll();
+    var final = allGroupsComplete();
+    var h = '<div class="jg-card"><table class="jg-table"><tr>' +
+      '<th></th><th class="l">' + t("jg_thirds") + '</th><th>' + t("jg_gr") + '</th>' +
+      '<th>'+t("jg_p")+'</th><th>'+t("jg_w")+'</th><th>'+t("jg_d")+'</th><th>'+t("jg_l")+'</th>' +
+      '<th>'+t("jg_gf")+'</th><th>'+t("jg_ga")+'</th><th>'+t("jg_gd")+'</th><th>'+t("jg_pts")+'</th></tr>';
+    rows.forEach(function (r, i) {
+      var col = ctx.teamColor(r.code);
+      var cls = i < 8 ? "q3" : (i === 8 ? "cut" : "");
+      h += '<tr class="' + cls + '">' +
+        '<td>' + (i+1) + '</td>' +
+        '<td class="l"><span class="jg-bdg" style="background:'+col[0]+';color:'+col[1]+'">'+r.code+'</span>'+esc(ctx.teamName(r.code)) +
+          (final && i < 8 ? '<span class="jg-ok">✓</span>' : '') + '</td>' +
+        '<td>' + r.group + '</td>' +
+        '<td>'+r.J+'</td><td>'+r.V+'</td><td>'+r.E+'</td><td>'+r.D+'</td>' +
+        '<td>'+r.gp+'</td><td>'+r.gc+'</td><td>'+(r.sg>0?"+":"")+r.sg+'</td><td class="pts">'+r.pts+'</td></tr>';
+    });
+    h += '</table></div><div class="jg-leg">'+t("jg_thirds_note")+'</div>';
     return h;
   }
 
