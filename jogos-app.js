@@ -64,6 +64,9 @@ window.JogosModule = (function () {
   function groupComplete(group) {
     return J.groupGames.filter(function (g) { return g.group === group; }).every(function (g) { return played(g.n); });
   }
+  function allGroupsComplete() {
+    return "ABCDEFGHIJKL".split("").every(groupComplete);
+  }
 
   // ---------- 8 melhores terceiros ----------
   function thirdsRanking() {
@@ -140,15 +143,30 @@ window.JogosModule = (function () {
 
   function tableHTML(group) {
     var rows = tableOf(group);
+    var complete = groupComplete(group);
+    // 3º colocado: a vaga só é definitiva quando os 12 grupos terminaram
+    var bestThirds = null;
+    if (allGroupsComplete()) {
+      bestThirds = {};
+      thirdsRanking().forEach(function (r) { bestThirds[r.code] = true; });
+    }
     var h = '<div class="jg-card"><table class="jg-table"><tr>' +
       '<th></th><th class="l">' + t("group",{x:group}) + '</th>' +
-      '<th>'+t("jg_p")+'</th><th>'+t("jg_w")+'</th><th>'+t("jg_d")+'</th><th>'+t("jg_l")+'</th><th>'+t("jg_gd")+'</th><th>'+t("jg_pts")+'</th></tr>';
+      '<th>'+t("jg_p")+'</th><th>'+t("jg_w")+'</th><th>'+t("jg_d")+'</th><th>'+t("jg_l")+'</th>' +
+      '<th>'+t("jg_gf")+'</th><th>'+t("jg_ga")+'</th><th>'+t("jg_gd")+'</th><th>'+t("jg_pts")+'</th></tr>';
     rows.forEach(function (r, i) {
       var col = ctx.teamColor(r.code);
-      h += '<tr class="' + (i < 2 ? "q" : "") + '">' +
+      // destaque: tom tênue = zona de classificação · forte + ✓ = vaga CONFIRMADA
+      var cls = "";
+      if (i < 2) cls = complete ? "q qok" : "q";
+      else if (i === 2 && bestThirds && bestThirds[r.code]) cls = "q3";
+      var qualified = cls === "q qok" || cls === "q3";
+      h += '<tr class="' + cls + '">' +
         '<td>' + (i+1) + '</td>' +
-        '<td class="l"><span class="jg-bdg" style="background:'+col[0]+';color:'+col[1]+'">'+r.code+'</span>'+esc(ctx.teamName(r.code))+'</td>' +
-        '<td>'+r.J+'</td><td>'+r.V+'</td><td>'+r.E+'</td><td>'+r.D+'</td><td>'+(r.sg>0?"+":"")+r.sg+'</td><td class="pts">'+r.pts+'</td></tr>';
+        '<td class="l"><span class="jg-bdg" style="background:'+col[0]+';color:'+col[1]+'">'+r.code+'</span>'+esc(ctx.teamName(r.code)) +
+          (qualified ? '<span class="jg-ok">✓</span>' : '') + '</td>' +
+        '<td>'+r.J+'</td><td>'+r.V+'</td><td>'+r.E+'</td><td>'+r.D+'</td>' +
+        '<td>'+r.gp+'</td><td>'+r.gc+'</td><td>'+(r.sg>0?"+":"")+r.sg+'</td><td class="pts">'+r.pts+'</td></tr>';
     });
     h += '</table></div><div class="jg-leg">'+t("jg_qual_note")+'</div>';
     return h;

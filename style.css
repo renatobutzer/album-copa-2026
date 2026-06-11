@@ -490,6 +490,13 @@ a { color: var(--brand); }
 .jg-table td.pts { font-weight: 900; }
 .jg-table tr.q td:first-child { color: var(--tenho-bg); }
 .jg-table tr.q { background: color-mix(in srgb, var(--tenho-bg) 8%, transparent); }
+/* vaga CONFIRMADA: 1º/2º com grupo completo (verde forte) · 3º entre os 8 melhores (âmbar) */
+.jg-table tr.qok { background: color-mix(in srgb, var(--tenho-bg) 20%, transparent); }
+.jg-table tr.q3  { background: color-mix(in srgb, var(--rep-bg) 18%, transparent); }
+.jg-table tr.q3 td:first-child { color: var(--rep-bg); }
+.jg-ok { font-weight: 900; font-size: .8em; flex: 0 0 auto; }
+tr.qok .jg-ok { color: var(--tenho-bg); }
+tr.q3 .jg-ok { color: var(--rep-bg); }
 .jg-bdg { min-width: 34px; height: 26px; padding: 0 4px; border-radius: 6px; display: inline-grid; place-items: center; font: 800 .6rem/1 var(--font); flex: 0 0 auto; }
 .jg-leg { font-size: .72rem; color: var(--text-dim); margin: 4px 2px 14px; line-height: 1.4; }
 
