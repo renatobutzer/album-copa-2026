@@ -319,11 +319,13 @@
   }
 
   // Agrupa figurinhas por seção/seleção, na ordem do álbum.
-  function groupByTeam(predicate) {
+  // keepEmpty=true mantém na lista também as seções sem nenhuma figurinha que
+  // passe no filtro (usado na aba Faltam p/ marcar as seleções já completas).
+  function groupByTeam(predicate, keepEmpty) {
     var groups = [];
     function pushGroup(key, label, badge, stickers) {
       var sel = stickers.filter(predicate);
-      if (sel.length) groups.push({ key: key, label: label, badge: badge, items: sel });
+      if (sel.length || keepEmpty) groups.push({ key: key, label: label, badge: badge, items: sel });
     }
     pushGroup("fwc", t("sec_opening"), svgFlag("trophy"), A.abertura.stickers);
     A.grupos.forEach(function (grp) {
@@ -336,23 +338,31 @@
   }
 
   function renderFaltam() {
-    var groups = groupByTeam(function (s) { return !have(s.code); });
+    var groups = groupByTeam(function (s) { return !have(s.code); }, true);
     var st = stats();
     document.getElementById("faltamHead").innerHTML =
       t("missing_head", { n: "<b>" + st.miss + "</b>", total: st.total }) +
       (st.foilTotal ? t("missing_foil", { n: (st.foilTotal - st.foilHave) }) : "");
     var el = document.getElementById("faltamList");
-    if (!groups.length) {
+    if (st.miss === 0) {           // álbum inteiro completo
       el.innerHTML = '<div class="empty"><div class="big">🏆</div>' + esc(t("missing_done")) + '</div>';
       return;
     }
     var h = "";
     groups.forEach(function (g) {
+      var done = g.items.length === 0;   // seção sem nenhuma faltante = completa
       var col = teamColor(g.key.indexOf("team-") === 0 ? g.key.slice(5) : g.key);
-      h += '<div class="list-group" style="--team:' + col[0] + ';--team-ink:' + col[1] + '"><h3>' + g.badge + " " + esc(g.label) +
-        ' <span class="cnt">— ' + t("missing_group", { n: g.items.length }) + '</span></h3><div class="pillrow">';
-      g.items.forEach(function (s) { h += pillHTML(s, false); });
-      h += "</div></div>";
+      h += '<div class="list-group' + (done ? " done" : "") + '" style="--team:' + col[0] + ';--team-ink:' + col[1] + '"><h3>' + g.badge + " " + esc(g.label) +
+        (done
+          ? ' <span class="cnt done">✓ ' + t("missing_complete") + '</span>'
+          : ' <span class="cnt">— ' + t("missing_group", { n: g.items.length }) + '</span>') +
+        '</h3>';
+      if (!done) {
+        h += '<div class="pillrow">';
+        g.items.forEach(function (s) { h += pillHTML(s, false); });
+        h += '</div>';
+      }
+      h += '</div>';
     });
     el.innerHTML = h;
   }

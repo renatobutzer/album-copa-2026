@@ -314,6 +314,8 @@ html[data-layout="editorial"] .group-label { font-family: var(--font-title); fon
 .list-group { margin-bottom: 16px; }
 .list-group h3 { font-size: .82rem; margin: 0 0 8px; color: var(--text); display:flex; align-items:center; gap:8px; }
 .list-group h3 .cnt { color: var(--text-dim); font-weight: 600; }
+.list-group h3 .cnt.done { color: var(--tenho-bg); font-weight: 800; }
+.list-group.done h3 { opacity: .72; }
 .pillrow { display: flex; flex-wrap: wrap; gap: 6px; }
 .pill {
   border: 1px solid var(--border); background: var(--surface); border-radius: 9px;
